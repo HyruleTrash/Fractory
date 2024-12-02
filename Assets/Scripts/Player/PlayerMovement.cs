@@ -32,6 +32,9 @@ public class Playermotion : MonoBehaviour
         VerticalMotion();
     }
 
+    /// <summary>
+    /// Apply horizontal motion to the player
+    /// </summary>
     private void HorizontalMotion()
     {
         // Store user input as a motion vector
@@ -49,6 +52,9 @@ public class Playermotion : MonoBehaviour
         controller.Move(motion * Time.fixedDeltaTime); // Move the player or apply friction
     }
 
+    /// <summary>
+    /// Apply vertical motion to the player
+    /// </summary>
     private void VerticalMotion()
     {
         bool isGrounded = IsGrounded();

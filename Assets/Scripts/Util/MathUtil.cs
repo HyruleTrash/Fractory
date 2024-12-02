@@ -3,7 +3,13 @@ using UnityEngine;
 
 public static class MathUtil
 {
-    // Turns given angle to a angle within a normal radius of -360 and 360. Then clamps it between a minimum and maximum value
+    /// <summary>
+    /// Turns given angle to a angle within a normal radius of -360 and 360. Then clamps it between a minimum and maximum value
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    /// <returns></returns>
     public static float ClampAngle(float angle, float min, float max)
     {
         angle = angle % 360;
@@ -21,7 +27,11 @@ public static class MathUtil
         return Mathf.Clamp(angle, min, max);
     }
 
-    // Get's the average value of a List or array type object
+    /// <summary>
+    /// Get's the average value of a List or array type object
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     public static float GetAverage(List<float> data)
     {
         float average = 0;
@@ -33,6 +43,12 @@ public static class MathUtil
         return average;
     }
 
+    /// <summary>
+    /// Get's the direction from one point to another
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
     public static Vector3 DirectionTowards(Vector3 from, Vector3 to){
         return (to - from).normalized;
     }

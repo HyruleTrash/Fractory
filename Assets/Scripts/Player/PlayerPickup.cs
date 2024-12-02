@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(InventoryManager))]
 public class PlayerPickup : MonoBehaviour {
@@ -18,14 +19,25 @@ public class PlayerPickup : MonoBehaviour {
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
+        Gamepad gamepad = Gamepad.current;
+        void IsInventoryFull(){
             if (inventoryManager.GetInventorySize() == inventoryManager.GetItemCount())
             {
                 LetGoItem();
             }else
             {
                 PickupItem();
+            }
+        }
+        if (gamepad != null){
+            if (gamepad.aButton.wasPressedThisFrame)
+            {
+                IsInventoryFull();
+            }
+        }else{
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                IsInventoryFull();
             }
         }
     }

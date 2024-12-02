@@ -11,6 +11,7 @@ public static class DebugUtil
     /// <param name="size"></param>
     public static void DrawSphere(Vector3 position, Color color, float size = 0.1f) {
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.GetComponent<Collider>().enabled = false;
         sphere.transform.position = position;
         sphere.transform.localScale = Vector3.one * size;
         Renderer renderer = sphere.GetComponent<Renderer>();

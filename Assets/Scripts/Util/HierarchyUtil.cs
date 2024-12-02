@@ -3,8 +3,12 @@ using System;
 
 public static class HierarchyUtil
 {
-    // Loops through children in search fo the first child that has a certain type.
-    // This function does not search through the children of children.
+    /// <summary>
+    /// Get the first child with a certain component
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="ComponentType"></param>
+    /// <returns></returns>
     public static GameObject GetFirstChildWithComponent(Transform transform, Type ComponentType)
     {
         for (int i = 0; i < transform.childCount; i++)
