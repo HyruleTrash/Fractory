@@ -4,6 +4,12 @@ using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(InventoryManager))]
 public class PlayerPickup : MonoBehaviour {
+    [Tooltip("CollisionLayer of the player, basically whatever the picked up item should ignore")]
+    public LayerMask exclusionMask;
+    [Tooltip("CollisionLayer of the pickedup object, what the player should ignore")]
+    public string PickUpMask;
+
+    [Space(10)]
     public Transform holdingPosition;
     [Tooltip("The box collider that will be used to detect items")]
     public TriggerTracker boxCollider;
@@ -61,6 +67,19 @@ public class PlayerPickup : MonoBehaviour {
                     LerpTo lerpTo = collider.AddComponent<LerpTo>();
                     lerpTo.speed = speed;
                     lerpTo.target = holdingPosition;
+
+                    // set exclusion layers picked up object
+                    PlayerInventoryItem liveItem = GetCurrentItem();
+                    Rigidbody rb = collider.GetComponent<Rigidbody>();
+                    if (rb){
+                        liveItem.layerMask = rb.excludeLayers;
+                        rb.excludeLayers = exclusionMask | rb.excludeLayers;
+                        int DefaultMask = 0;
+                        if (collider.gameObject.layer == DefaultMask)
+                        {
+                            collider.gameObject.layer = LayerMask.NameToLayer(PickUpMask);                        
+                        }
+                    }
                 }else{
                     break;
                 }
@@ -74,12 +93,28 @@ public class PlayerPickup : MonoBehaviour {
     private void LetGoItem()
     {
         // Get the last item in the inventory
-        PlayerInventoryItem item = (PlayerInventoryItem)inventoryManager.GetItem(inventoryManager.GetInventorySize() - 1);
-
+        PlayerInventoryItem item = GetCurrentItem();
+        Rigidbody rb = item.itemObject.GetComponent<Rigidbody>();
+        if (rb){
+            rb.excludeLayers = item.layerMask;
+        }
+        int DefaultMask = 0;
+        if (item.itemObject.layer != DefaultMask)
+        {
+            item.itemObject.layer = DefaultMask;                        
+        }
         // Remove the item from the inventory
         inventoryManager.RemoveItem(inventoryManager.GetInventorySize() - 1);
 
         // Remove the LerpTo component from the item
         Destroy(item.itemObject.GetComponent<LerpTo>());
+    }
+
+    /// <summary>
+    /// Gets the currently held item
+    /// </summary>
+    /// <returns></returns>
+    private PlayerInventoryItem GetCurrentItem(){
+        return (PlayerInventoryItem)inventoryManager.GetItem(inventoryManager.GetInventorySize() - 1);
     }
 }
