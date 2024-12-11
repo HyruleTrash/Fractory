@@ -7,7 +7,7 @@ Shader "FracturedRealm/RaymarchingShader"
     // the input structure (Attributes), and the output structure (Varyings)
     #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
-    float4 _CamWorldSpace;
+    float4 _CamWorldPos;
     float4x4 _CamFrustum, _CamToWorld;
 
     struct AttributesCustom
@@ -26,21 +26,51 @@ Shader "FracturedRealm/RaymarchingShader"
         UNITY_VERTEX_OUTPUT_STEREO
     };
 
+    float4 GenerateVertex(uint vertexID)
+    {
+        float4 vertex = float4(0.0f, 0.0f, 0.0f, 1.0f);
+        switch(vertexID)
+        {
+            case 0:
+                vertex = float4(0.0f, 0.0f, 3.0f, 1.0f);
+                break;
+            case 1:
+                vertex = float4(1.0f, 0.0f, 2.0f, 1.0f);
+                break;
+            case 2:
+                vertex = float4(1.0f, 1.0f, 1.0f, 1.0f);
+                break;
+            case 3:
+                vertex = float4(0.0f, 1.0f, 0.0f, 1.0f);
+                break;
+        }
+
+        vertex.xy -= 0.5f;
+        vertex.xy *= 2.0f;
+        vertex.y *= -1.0f;
+
+        #ifdef UNITY_PRETRANSFORM_TO_DISPLAY_ORIENTATION
+            vertex = ApplyPretransformRotation(vertex);
+        #endif
+        return vertex;
+    }
+
     VaryingsCustom Vert(AttributesCustom input)
     {
         VaryingsCustom output;
         UNITY_SETUP_INSTANCE_ID(input);
         UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
-        float4 pos = GetFullScreenTriangleVertexPosition(input.vertexID);
+        float4 vertex = GenerateVertex(input.vertexID);
+        half index = vertex.z;
+        input.vertex = 0;
+        
+        output.vertex = GetFullScreenTriangleVertexPosition(input.vertexID);
+        output.vertex.xy = vertex.xy;
         output.uv = GetFullScreenTriangleTexCoord(input.vertexID);
 
-        output.vertex = pos;
-
-        output.ray = _CamFrustum[(int)input.vertexID].xyz;
-
+        output.ray = _CamFrustum[(int)index].xyz;
         output.ray /= abs(output.ray.z);
-
         output.ray = mul(_CamToWorld, output.ray);
 
         return output;
@@ -48,9 +78,10 @@ Shader "FracturedRealm/RaymarchingShader"
 
     float4 Frag (VaryingsCustom input) : SV_Target
     {
-        //return float4(input.uv.xy, 1, 1);
+        // float3 t = normalize(input.vertex.xyz);
+        // return float4(t.z, 1);
         float3 rayDir = normalize(input.ray.xyz);
-        float3 rayOrigin = _CamWorldSpace.xyz;
+        float3 rayOrigin = _CamWorldPos.xyz;
         return float4(rayDir, 1);
     }
 

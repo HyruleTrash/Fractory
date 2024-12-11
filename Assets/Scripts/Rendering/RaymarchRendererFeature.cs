@@ -43,7 +43,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
     public class RaymarchPass : ScriptableRenderPass{
         private Camera cam;
         private Material _raymarchMaterial;
-        TextureHandle _source, destination;
+        TextureHandle _source, _destination;
         private RenderTextureDescriptor textureDescriptor;
 
         public RaymarchPass(Material material)
@@ -63,29 +63,33 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             textureDescriptor.depthBufferBits = 0;
 
             _source = resourceData.activeColorTexture;
-            destination = UniversalRenderer.CreateRenderGraphTexture(renderGraph, textureDescriptor, "RaymarchPass_tex", false);
-
-            SetSettings();
+            _destination = UniversalRenderer.CreateRenderGraphTexture(renderGraph, textureDescriptor, "RaymarchPass_tex", false);
             
-            RenderGraphUtils.BlitMaterialParameters output = new(destination, _source, _raymarchMaterial, 0);
-            renderGraph.AddBlitPass(output, "RaymarchPass");
+            RenderGraphUtils.BlitMaterialParameters output = SetSettings(_destination, _source, 0);
+            renderGraph.AddBlitPass(output, "RaymarchingPass");
         }
 
-        private void SetSettings(){
+        private RenderGraphUtils.BlitMaterialParameters SetSettings(TextureHandle destination, TextureHandle source, int pass = 0){
             if (!_raymarchMaterial)
             {
-                return;
+                return new(destination, source, _raymarchMaterial, pass);
             }
 
-            if (cam == null)
+            if (!cam)
             {
                 Debug.LogError("Main camera not found");
-                return;
+                return new(destination, source, _raymarchMaterial, pass);
             }
 
             _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(cam));
             _raymarchMaterial.SetMatrix("_CamToWorld", cam.cameraToWorldMatrix);
             _raymarchMaterial.SetVector("_CamWorldPos", cam.transform.position);
+
+            Debug.Log(cam.cameraToWorldMatrix);
+
+            RenderGraphUtils.BlitMaterialParameters output = new(destination, source, _raymarchMaterial, pass);
+            output.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
+            return output;
         }
 
         private Matrix4x4 CamFrustum(Camera cam)
