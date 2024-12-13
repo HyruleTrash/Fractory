@@ -95,13 +95,26 @@ Shader "FracturedRealm/RaymarchingShader"
         return x - floor(x);
     }
 
+    float modf(float x, float y)
+    {
+        return x - y * floor(x / y);
+    }
+
+    float3 mod(float3 x, float y) {
+        return float3(
+            modf(x.x, y),
+            modf(x.y, y), 
+            modf(x.z, y)
+        );
+    }
+
     float sdSphere(float3 pos, float radius)
     {
         return length(pos) - radius;
     }
 
-    float sdCube(float3 rayPos) {
-        const float3 corner = float3(1.0, 1.0, 1.0);
+    float sdCube(float3 rayPos, float size) {
+        const float3 corner = float3(1.0, 1.0, 1.0) * size;
         float3 ray = abs(rayPos); // fold ray into positive octant
         float3 cornerToRay = ray - corner;
         float cornerToRayMaxComponent = max(max(cornerToRay.x, cornerToRay.y), cornerToRay.z);
@@ -110,8 +123,8 @@ Shader "FracturedRealm/RaymarchingShader"
         return length(closestToOutsideRay) + distToInsideRay;
     } 
 
-    float sdCross(float3 rayPos) {
-        const float3 corner = float3(1.0, 1.0, 1.0);
+    float sdCross(float3 rayPos, float size) {
+        const float3 corner = float3(1.0, 1.0, 1.0) * size;
         float3 ray = abs(rayPos); // fold ray into positive quadrant
         float3 cornerToRay = ray - corner;
     
@@ -126,10 +139,10 @@ Shader "FracturedRealm/RaymarchingShader"
         return length(closestOutsidePoint) + -length(closestInsidePoint);
     }
 
-    float sdMengerSponge(float3 rayPos, int numIterations) {
-        const float cubeWidth = 2.0;
+    float sdMengerSponge(float3 rayPos, float size, int numIterations) {
+        const float cubeWidth = size * 2.0;
         const float oneThird = 1.0 / 3.0;
-        float spongeCube = sdCube(rayPos);
+        float spongeCube = sdCube(rayPos, size);
         float mengerSpongeDist = spongeCube;
         
         float scale = 1.0;
@@ -139,14 +152,14 @@ Shader "FracturedRealm/RaymarchingShader"
             
             float translation = -boxedWidth / 2.0;
             float3 ray = rayPos - translation;
-            float3 repeatedPos = fmod(ray, boxedWidth);
+            float3 repeatedPos = mod(ray, boxedWidth);
             repeatedPos += translation;
             
             // #2 scale coordinate systems from 
             // [-1/scale, 1/scale) -> to [-1.0, 1.0)
             repeatedPos *= scale; 
             
-            float crossesDist = sdCross(repeatedPos / oneThird) * oneThird;
+            float crossesDist = sdCross(repeatedPos / oneThird, size) * oneThird;
             
             // #3 Acquire actual distance by un-stretching
             crossesDist /= scale;
@@ -162,11 +175,11 @@ Shader "FracturedRealm/RaymarchingShader"
     {
         float Sphere1 = sdSphere(pos - float3(0, 0, -2.5), 1.0);
         //float Cube1 = sdSierpinskiCarpetCube(pos - float3(0, 1, -3), 1, 5);
-        float Cube2 = sdMengerSponge(pos- float3(0, 0, -3), 10);
-        return Sphere1;
+        float Cube2 = sdMengerSponge(pos - float3(0, 0, -3), 1.0, 5);
+        return Cube2;
     }
 
-    float GetNormal(float3 pos)
+    float3 GetNormal(float3 pos)
     {
         const float2 offset = float2(0.001, 0.0);
         float3 normal = float3(
@@ -195,9 +208,9 @@ Shader "FracturedRealm/RaymarchingShader"
             if (distance < 0.01)
             {
                 float3 normal = GetNormal(pos);
-                //float light = dot(-_LightDir, normal);
-                //result = float4(1, 1, 1, 1) * light;
-                result = float4(normal, 1);
+                float light = dot(-_LightDir, normal);
+                result = float4(1, 1, 1, 1) * light;
+                //result = float4(normal, 1);
                 break;
             }
 
