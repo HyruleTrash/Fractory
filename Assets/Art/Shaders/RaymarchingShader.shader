@@ -8,7 +8,9 @@ Shader "FracturedRealm/RaymarchingShader"
     #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
     float4 _CamWorldPos;
-    float4x4 _CamFrustum, _CamToWorld;
+    float4x4 _CamFrustum;
+    float _MaxDistance;
+    float3 _LightDir;
 
     struct AttributesCustom
     {
@@ -25,6 +27,17 @@ Shader "FracturedRealm/RaymarchingShader"
         float3 ray : TEXCOORD1;
         UNITY_VERTEX_OUTPUT_STEREO
     };
+    
+    float4x4 InverseZAxisCamToWorld(float4x4 camToWorldMatrix)
+    {
+        // Create a copy of the input matrix
+        float4x4 modifiedMatrix = camToWorldMatrix;
+    
+        // Negate the z-component of the translation
+        modifiedMatrix[3][2] = -modifiedMatrix[3][2];
+    
+        return modifiedMatrix;
+    }
 
     float4 GenerateVertex(uint vertexID)
     {
@@ -54,7 +67,7 @@ Shader "FracturedRealm/RaymarchingShader"
         #endif
         return vertex;
     }
-
+    
     VaryingsCustom Vert(AttributesCustom input)
     {
         VaryingsCustom output;
@@ -71,18 +84,135 @@ Shader "FracturedRealm/RaymarchingShader"
 
         output.ray = _CamFrustum[(int)index].xyz;
         output.ray /= abs(output.ray.z);
+        float4x4 _CamToWorld = InverseZAxisCamToWorld(unity_CameraToWorld);
         output.ray = mul(_CamToWorld, output.ray);
 
         return output;
     }
 
+    float fract(float x)
+    {
+        return x - floor(x);
+    }
+
+    float sdSphere(float3 pos, float radius)
+    {
+        return length(pos) - radius;
+    }
+
+    float sdCube(float3 rayPos) {
+        const float3 corner = float3(1.0, 1.0, 1.0);
+        float3 ray = abs(rayPos); // fold ray into positive octant
+        float3 cornerToRay = ray - corner;
+        float cornerToRayMaxComponent = max(max(cornerToRay.x, cornerToRay.y), cornerToRay.z);
+        float distToInsideRay = min(cornerToRayMaxComponent, 0.0);
+        float3 closestToOutsideRay = max(cornerToRay, 0.0);
+        return length(closestToOutsideRay) + distToInsideRay;
+    } 
+
+    float sdCross(float3 rayPos) {
+        const float3 corner = float3(1.0, 1.0, 1.0);
+        float3 ray = abs(rayPos); // fold ray into positive quadrant
+        float3 cornerToRay = ray - corner;
+    
+        float smallestComp = min(min(cornerToRay.x, cornerToRay.y), cornerToRay.z);
+        float largestComp = max(max(cornerToRay.x, cornerToRay.y), cornerToRay.z);
+        float middleComp = cornerToRay.x + cornerToRay.y + cornerToRay.z
+                                - smallestComp - largestComp;
+                
+        float2 closestOutsidePoint = max(float2(smallestComp, middleComp), 0.0);
+        float2 closestInsidePoint = min(float2(middleComp, largestComp), 0.0);
+    
+        return length(closestOutsidePoint) + -length(closestInsidePoint);
+    }
+
+    float sdMengerSponge(float3 rayPos, int numIterations) {
+        const float cubeWidth = 2.0;
+        const float oneThird = 1.0 / 3.0;
+        float spongeCube = sdCube(rayPos);
+        float mengerSpongeDist = spongeCube;
+        
+        float scale = 1.0;
+        for(int i = 0; i < numIterations; ++i) {
+            // #1 determine repeated box width
+            float boxedWidth = cubeWidth / scale;
+            
+            float translation = -boxedWidth / 2.0;
+            float3 ray = rayPos - translation;
+            float3 repeatedPos = fmod(ray, boxedWidth);
+            repeatedPos += translation;
+            
+            // #2 scale coordinate systems from 
+            // [-1/scale, 1/scale) -> to [-1.0, 1.0)
+            repeatedPos *= scale; 
+            
+            float crossesDist = sdCross(repeatedPos / oneThird) * oneThird;
+            
+            // #3 Acquire actual distance by un-stretching
+            crossesDist /= scale;
+            
+            mengerSpongeDist = max(mengerSpongeDist, -crossesDist);
+            
+            scale *= 3.0;
+        }
+        return mengerSpongeDist;
+    }
+
+    float DistanceField(float3 pos)
+    {
+        float Sphere1 = sdSphere(pos - float3(0, 0, -2.5), 1.0);
+        //float Cube1 = sdSierpinskiCarpetCube(pos - float3(0, 1, -3), 1, 5);
+        float Cube2 = sdMengerSponge(pos- float3(0, 0, -3), 10);
+        return Sphere1;
+    }
+
+    float GetNormal(float3 pos)
+    {
+        const float2 offset = float2(0.001, 0.0);
+        float3 normal = float3(
+            DistanceField(pos + offset.xyy) - DistanceField(pos - offset.xyy),
+            DistanceField(pos + offset.yxy) - DistanceField(pos - offset.yxy),
+            DistanceField(pos + offset.yyx) - DistanceField(pos - offset.yyx)
+        );
+        return normalize(normal);
+    }
+
+    float4 RayMarching(float3 rayOrigin, float3 rayDir){
+        float4 result = float4(1, 1, 1, 1);
+        const int maxSteps = 256;
+        float distanceTraveled = 0.0; // distance traveled along the ray
+
+        for (int i = 0; i < maxSteps; i++)
+        {
+            if (distanceTraveled > _MaxDistance)
+            {
+                result = float4(rayDir, 0);
+                break;
+            }
+            float3 pos = rayOrigin + rayDir * distanceTraveled;
+            // check for hit
+            float distance = DistanceField(pos);
+            if (distance < 0.01)
+            {
+                float3 normal = GetNormal(pos);
+                //float light = dot(-_LightDir, normal);
+                //result = float4(1, 1, 1, 1) * light;
+                result = float4(normal, 1);
+                break;
+            }
+
+            distanceTraveled += distance;
+        }
+
+        return result;
+    }
+
     float4 Frag (VaryingsCustom input) : SV_Target
     {
-        // float3 t = normalize(input.vertex.xyz);
-        // return float4(t.z, 1);
         float3 rayDir = normalize(input.ray.xyz);
         float3 rayOrigin = _CamWorldPos.xyz;
-        return float4(rayDir, 1);
+        float4 color = RayMarching(rayOrigin, rayDir);
+        return color;
     }
 
     ENDHLSL
@@ -99,7 +229,6 @@ Shader "FracturedRealm/RaymarchingShader"
             
             #pragma vertex Vert
             #pragma fragment Frag
-            #pragma target 3.0
             
             ENDHLSL
         }

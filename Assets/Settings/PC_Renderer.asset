@@ -117,3 +117,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   shader: {fileID: 4800000, guid: 702425fbb9323a9439fb59e832384d91, type: 3}
+  maxDistance: 50

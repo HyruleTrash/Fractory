@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
@@ -10,6 +9,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
     public Shader shader;
     private RaymarchPass _raymarchPass;
     private Material material;
+    public float maxDistance = 100.0f;
 
     public override void Create()
     {
@@ -17,7 +17,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             return;
 
         material = new Material(shader);
-        _raymarchPass = new RaymarchPass(material);
+        _raymarchPass = new RaymarchPass(material, maxDistance);
 
         _raymarchPass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
@@ -42,15 +42,18 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
 
     public class RaymarchPass : ScriptableRenderPass{
         private Camera cam;
+        public float maxDistance;
+        public Transform light;
         private Material _raymarchMaterial;
         TextureHandle _source, _destination;
         private RenderTextureDescriptor textureDescriptor;
 
-        public RaymarchPass(Material material)
+        public RaymarchPass(Material material, float maxDistance)
         {
             _raymarchMaterial = material;
             textureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
             cam = Camera.main;
+            this.maxDistance = maxDistance;
         }
 
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData){
@@ -65,11 +68,11 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             _source = resourceData.activeColorTexture;
             _destination = UniversalRenderer.CreateRenderGraphTexture(renderGraph, textureDescriptor, "RaymarchPass_tex", false);
             
-            RenderGraphUtils.BlitMaterialParameters output = SetSettings(_destination, _source, 0);
+            RenderGraphUtils.BlitMaterialParameters output = SetSettings(_destination, _source, cameraData, 0);
             renderGraph.AddBlitPass(output, "RaymarchingPass");
         }
 
-        private RenderGraphUtils.BlitMaterialParameters SetSettings(TextureHandle destination, TextureHandle source, int pass = 0){
+        private RenderGraphUtils.BlitMaterialParameters SetSettings(TextureHandle destination, TextureHandle source, UniversalCameraData cameraData, int pass = 0){
             if (!_raymarchMaterial)
             {
                 return new(destination, source, _raymarchMaterial, pass);
@@ -80,12 +83,12 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
                 Debug.LogError("Main camera not found");
                 return new(destination, source, _raymarchMaterial, pass);
             }
+            light = GameObject.Find("Directional Light").transform;
 
             _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(cam));
-            _raymarchMaterial.SetMatrix("_CamToWorld", cam.cameraToWorldMatrix);
-            _raymarchMaterial.SetVector("_CamWorldPos", cam.transform.position);
-
-            Debug.Log(cam.cameraToWorldMatrix);
+            _raymarchMaterial.SetVector("_CamWorldPos", cameraData.worldSpaceCameraPos);
+            _raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
+            _raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
 
             RenderGraphUtils.BlitMaterialParameters output = new(destination, source, _raymarchMaterial, pass);
             output.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
