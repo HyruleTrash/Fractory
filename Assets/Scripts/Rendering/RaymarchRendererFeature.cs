@@ -41,7 +41,6 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
 
 
     public class RaymarchPass : ScriptableRenderPass{
-        private Camera cam;
         public float maxDistance;
         public Transform light;
         private Material _raymarchMaterial;
@@ -52,7 +51,6 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
         {
             _raymarchMaterial = material;
             textureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
-            cam = Camera.main;
             this.maxDistance = maxDistance;
         }
 
@@ -85,15 +83,10 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             {
                 return new(destination, source, _raymarchMaterial, 0);
             }
-
-            if (!cam)
-            {
-                Debug.LogError("Main camera not found");
-                return new(destination, source, _raymarchMaterial, 0);
-            }
             light = GameObject.Find("Directional Light").transform;
 
-            _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(cam));
+            _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(cameraData.camera));
+            _raymarchMaterial.SetMatrix("_CamToWorld", cameraData.camera.cameraToWorldMatrix);
             _raymarchMaterial.SetVector("_CamWorldPos", cameraData.worldSpaceCameraPos);
             _raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
             _raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
@@ -111,20 +104,37 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
         private Matrix4x4 CamFrustum(Camera cam)
         {
             Matrix4x4 frustum = Matrix4x4.identity;
-            float fov = Mathf.Tan((cam.fieldOfView * 0.5f) * Mathf.Deg2Rad);
 
-            Vector3 goUp = Vector3.up * fov;
-            Vector3 goRight = Vector3.right * fov * cam.aspect;
+            if (cam.orthographic)
+            {
+                Vector3 goUp = Vector3.up * cam.orthographicSize;
+                Vector3 goRight = Vector3.right * cam.orthographicSize;
 
-            Vector3 TL = -Vector3.forward - goRight + goUp;
-            Vector3 TR = -Vector3.forward + goRight + goUp;
-            Vector3 BR = -Vector3.forward + goRight - goUp;
-            Vector3 BL = -Vector3.forward - goRight - goUp;
+                Vector3 TL = -Vector3.forward - goRight + goUp;
+                Vector3 TR = -Vector3.forward + goRight + goUp;
+                Vector3 BR = -Vector3.forward + goRight - goUp;
+                Vector3 BL = -Vector3.forward - goRight - goUp;
 
-            frustum.SetRow(0, TL);
-            frustum.SetRow(1, TR);
-            frustum.SetRow(2, BR);
-            frustum.SetRow(3, BL);
+                frustum.SetRow(0, TL);
+                frustum.SetRow(1, BL);
+                frustum.SetRow(2, BR);
+                frustum.SetRow(3, TR);
+            }else{
+                float fov = Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+
+                Vector3 goUp = Vector3.up * fov;
+                Vector3 goRight = Vector3.right * fov / cam.aspect;
+
+                Vector3 TL = -Vector3.forward - goRight + goUp;
+                Vector3 TR = -Vector3.forward + goRight + goUp;
+                Vector3 BR = -Vector3.forward + goRight - goUp;
+                Vector3 BL = -Vector3.forward - goRight - goUp;
+
+                frustum.SetRow(0, TL);
+                frustum.SetRow(1, BL);
+                frustum.SetRow(2, BR);
+                frustum.SetRow(3, TR);
+            }
 
             return frustum;
         }

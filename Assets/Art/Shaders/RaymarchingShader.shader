@@ -10,6 +10,7 @@ Shader "FracturedRealm/RaymarchingShader"
 
         float4 _CamWorldPos;
         float4x4 _CamFrustum;
+        float4x4 _CamToWorld;
         float _MaxDistance;
         float3 _LightDir;
 
@@ -29,43 +30,11 @@ Shader "FracturedRealm/RaymarchingShader"
             UNITY_VERTEX_OUTPUT_STEREO
         };
 
-        float4 GenerateVertex(uint vertexID)
-        {
-            float4 vertex = float4(0.0f, 0.0f, 0.0f, 1.0f);
-            switch(vertexID)
-            {
-                case 0:
-                    vertex = float4(0.0f, 0.0f, 3.0f, 1.0f);
-                    break;
-                case 1:
-                    vertex = float4(1.0f, 0.0f, 2.0f, 1.0f);
-                    break;
-                case 2:
-                    vertex = float4(1.0f, 1.0f, 1.0f, 1.0f);
-                    break;
-                case 3:
-                    vertex = float4(0.0f, 1.0f, 0.0f, 1.0f);
-                    break;
-            }
-
-            vertex.xy -= 0.5f;
-            vertex.xy *= 2.0f;
-            vertex.y *= -1.0f;
-
-            #ifdef UNITY_PRETRANSFORM_TO_DISPLAY_ORIENTATION
-                vertex = ApplyPretransformRotation(vertex);
-            #endif
-            return vertex;
-        }
-
         C_Varyings C_Vert(C_Attributes input)
         {
             C_Varyings output;
             UNITY_SETUP_INSTANCE_ID(input);
             UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
-
-            float4 vertex   = GenerateVertex(input.vertexID);
-            half index      = vertex.z;
             
             float4 pos = GetQuadVertexPosition(input.vertexID);
             pos.xy -= 0.5f;
@@ -78,7 +47,7 @@ Shader "FracturedRealm/RaymarchingShader"
 
             output.ray = _CamFrustum[input.vertexID].xyz;
             output.ray /= abs(output.ray.z);
-            output.ray = mul(unity_CameraToWorld, output.ray);
+            output.ray = mul(_CamToWorld, output.ray);
 
             return output;
         }
@@ -87,7 +56,7 @@ Shader "FracturedRealm/RaymarchingShader"
         {
             float Sphere1 = sdSphere(pos - float3(0, 0, -2.5), 1.0);
             //float Cube1 = sdSierpinskiCarpetCube(pos - float3(0, 1, -3), 1, 5);
-            float Cube2 = sdMengerSponge(pos - float3(0, 0, -3), 1.0, 5);
+            float Cube2 = sdMengerSponge(pos - float3(0, 0, 3), 1.0, 5);
             return Cube2;
         }
 
@@ -102,7 +71,8 @@ Shader "FracturedRealm/RaymarchingShader"
             return normalize(normal);
         }
 
-        float4 RayMarching(float3 rayOrigin, float3 rayDir){
+        float4 RayMarching(float3 rayOrigin, float3 rayDir)
+        {
             float4 result = float4(1, 1, 1, 1);
             const int maxSteps = 256;
             float distanceTraveled = 0.0; // distance traveled along the ray
@@ -121,7 +91,7 @@ Shader "FracturedRealm/RaymarchingShader"
                 {
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
-                    result = float4(1, 1, 1, 1) * light;
+                    result = float4(float3(1, 1, 1) * light, 1);
                     //result = float4(normal, 1);
                     break;
                 }
@@ -131,18 +101,16 @@ Shader "FracturedRealm/RaymarchingShader"
 
             return result;
         }
-    
-        float4 PreFrag (Varyings input) : SV_Target
-        {
-            float3 color = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, input.texcoord).rgb;
-
-            return float4(color, 1);
-        }
 
         float4 Frag (C_Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-            float3 oldColor = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, input.texcoord).rgb;
+
+            Varyings inputAlt;
+            inputAlt.texcoord = input.texcoord;
+            inputAlt.positionCS = input.positionCS;
+
+            float3 oldColor = FragBilinear(inputAlt).rgb;
 
             float3 rayDir = normalize(input.ray.xyz);
             float3 rayOrigin = _CamWorldPos.xyz;
@@ -150,7 +118,8 @@ Shader "FracturedRealm/RaymarchingShader"
             
             return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);
 
-            //return float4(input.texcoord, 0, 1);
+            // return float4(input.texcoord.xy, 0, 1);
+            // return float4(rayDir, 1);
         }
     
     ENDHLSL
@@ -167,7 +136,7 @@ Shader "FracturedRealm/RaymarchingShader"
             HLSLPROGRAM
             
             #pragma vertex Vert
-            #pragma fragment PreFrag
+            #pragma fragment FragBilinear
             
             ENDHLSL
         }

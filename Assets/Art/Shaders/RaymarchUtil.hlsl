@@ -48,6 +48,7 @@ float sdCross(float3 rayPos, float size) {
 }
 
 float sdMengerSponge(float3 rayPos, float size, int numIterations) {
+    size /= 2;
     const float cubeWidth = size * 2.0;
     const float oneThird = 1.0 / 3.0;
     float spongeCube = sdCube(rayPos, size);
