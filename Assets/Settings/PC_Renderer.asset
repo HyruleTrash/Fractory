@@ -115,6 +115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46dc0081e6335bd4e8f5f412c6910217, type: 3}
   m_Name: RaymarchRendererFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   shader: {fileID: 4800000, guid: 702425fbb9323a9439fb59e832384d91, type: 3}
   maxDistance: 50

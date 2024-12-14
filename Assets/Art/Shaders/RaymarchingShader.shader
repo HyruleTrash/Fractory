@@ -95,7 +95,6 @@ Shader "FracturedRealm/RaymarchingShader"
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
                     result = float4(float3(1, 1, 1) * light, 1);
-                    //result = float4(normal, 1);
                     break;
                 }
 
@@ -123,10 +122,6 @@ Shader "FracturedRealm/RaymarchingShader"
             float4 color = RayMarching(rayOrigin, rayDir, depth);
             
             return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);
-
-            // return float4(input.texcoord.xy, 0, 1);
-            // return float4(rayDir, 1);
-            // return float4(float3(1,1,1) * depth, 1);
         }
     
     ENDHLSL
