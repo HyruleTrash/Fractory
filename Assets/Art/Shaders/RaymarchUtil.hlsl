@@ -79,3 +79,13 @@ float sdMengerSponge(float3 rayPos, float size, int numIterations) {
     }
     return mengerSpongeDist;
 }
+
+float LinearEyeDepth(float cameraDepth, float near, float far)
+{
+    return rcp(_ZBufferParams.z * cameraDepth + _ZBufferParams.w);
+}
+
+float rcp(float value)
+{
+    return 1.0 / value;
+}

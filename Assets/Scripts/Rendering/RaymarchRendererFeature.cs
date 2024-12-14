@@ -88,6 +88,8 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(cameraData.camera));
             _raymarchMaterial.SetMatrix("_CamToWorld", cameraData.camera.cameraToWorldMatrix);
             _raymarchMaterial.SetVector("_CamWorldPos", cameraData.worldSpaceCameraPos);
+            _raymarchMaterial.SetFloat("_Near", cameraData.camera.nearClipPlane);
+            _raymarchMaterial.SetFloat("_Far", cameraData.camera.farClipPlane);
             _raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
             _raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
 
@@ -123,7 +125,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
                 float fov = Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
 
                 Vector3 goUp = Vector3.up * fov;
-                Vector3 goRight = Vector3.right * fov / cam.aspect;
+                Vector3 goRight = Vector3.right * fov * cam.aspect;
 
                 Vector3 TL = -Vector3.forward - goRight + goUp;
                 Vector3 TR = -Vector3.forward + goRight + goUp;

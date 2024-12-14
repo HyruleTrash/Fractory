@@ -6,11 +6,14 @@ Shader "FracturedRealm/RaymarchingShader"
         // The Blit.hlsl file provides the vertex shader (Vert),
         // the input structure (Attributes), and the output structure (Varyings)
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
+
         #include "Assets\Art\Shaders\RaymarchUtil.hlsl"
 
+        sampler2D _CameraDepthTexture;
+        float _Near;
+        float _Far;
         float4 _CamWorldPos;
-        float4x4 _CamFrustum;
-        float4x4 _CamToWorld;
+        float4x4 _CamFrustum, _CamToWorld;
         float _MaxDistance;
         float3 _LightDir;
 
@@ -71,7 +74,7 @@ Shader "FracturedRealm/RaymarchingShader"
             return normalize(normal);
         }
 
-        float4 RayMarching(float3 rayOrigin, float3 rayDir)
+        float4 RayMarching(float3 rayOrigin, float3 rayDir, float depth)
         {
             float4 result = float4(1, 1, 1, 1);
             const int maxSteps = 256;
@@ -79,7 +82,7 @@ Shader "FracturedRealm/RaymarchingShader"
 
             for (int i = 0; i < maxSteps; i++)
             {
-                if (distanceTraveled > _MaxDistance)
+                if (distanceTraveled > _MaxDistance || distanceTraveled >= depth)
                 {
                     result = float4(rayDir, 0);
                     break;
@@ -106,6 +109,9 @@ Shader "FracturedRealm/RaymarchingShader"
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
+            float depth = LinearEyeDepth(tex2D(_CameraDepthTexture, input.texcoord).r, _Near, _Far);
+            depth *= length(input.ray);
+
             Varyings inputAlt;
             inputAlt.texcoord = input.texcoord;
             inputAlt.positionCS = input.positionCS;
@@ -114,12 +120,13 @@ Shader "FracturedRealm/RaymarchingShader"
 
             float3 rayDir = normalize(input.ray.xyz);
             float3 rayOrigin = _CamWorldPos.xyz;
-            float4 color = RayMarching(rayOrigin, rayDir);
+            float4 color = RayMarching(rayOrigin, rayDir, depth);
             
             return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);
 
             // return float4(input.texcoord.xy, 0, 1);
             // return float4(rayDir, 1);
+            // return float4(float3(1,1,1) * depth, 1);
         }
     
     ENDHLSL
