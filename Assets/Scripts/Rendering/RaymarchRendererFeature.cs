@@ -60,6 +60,9 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
             UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
 
+            if (resourceData.isActiveTargetBackBuffer)
+                return;
+
             // Set the blur texture size to be the same as the camera target size.
             textureDescriptor.width = cameraData.cameraTargetDescriptor.width;
             textureDescriptor.height = cameraData.cameraTargetDescriptor.height;
@@ -68,20 +71,25 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             _source = resourceData.activeColorTexture;
             _destination = UniversalRenderer.CreateRenderGraphTexture(renderGraph, textureDescriptor, "RaymarchPass_tex", false);
             
-            RenderGraphUtils.BlitMaterialParameters output = SetSettings(_destination, _source, cameraData, 0);
+            // This check is to avoid an error from the material preview in the scene
+            if (!_source.IsValid() || !_destination.IsValid())
+                return;
+
+            RenderGraphUtils.BlitMaterialParameters output = SetSettings(renderGraph, _destination, _source, cameraData);
+
             renderGraph.AddBlitPass(output, "RaymarchingPass");
         }
 
-        private RenderGraphUtils.BlitMaterialParameters SetSettings(TextureHandle destination, TextureHandle source, UniversalCameraData cameraData, int pass = 0){
+        private RenderGraphUtils.BlitMaterialParameters SetSettings(RenderGraph renderGraph, TextureHandle destination, TextureHandle source, UniversalCameraData cameraData){
             if (!_raymarchMaterial)
             {
-                return new(destination, source, _raymarchMaterial, pass);
+                return new(destination, source, _raymarchMaterial, 0);
             }
 
             if (!cam)
             {
                 Debug.LogError("Main camera not found");
-                return new(destination, source, _raymarchMaterial, pass);
+                return new(destination, source, _raymarchMaterial, 0);
             }
             light = GameObject.Find("Directional Light").transform;
 
@@ -90,8 +98,13 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             _raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
             _raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
 
-            RenderGraphUtils.BlitMaterialParameters output = new(destination, source, _raymarchMaterial, pass);
+            RenderGraphUtils.BlitMaterialParameters prePass = new(source, destination, _raymarchMaterial, 0);
+            prePass.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
+            renderGraph.AddBlitPass(prePass, "RaymarchingPrePass");
+
+            RenderGraphUtils.BlitMaterialParameters output = new(destination, source, _raymarchMaterial, 1);
             output.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
+            
             return output;
         }
 
