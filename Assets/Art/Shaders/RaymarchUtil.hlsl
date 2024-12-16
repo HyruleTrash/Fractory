@@ -51,18 +51,21 @@ float3 rotate(float3 v, float3 axis, float angle) {
 }
 
 float3 rotate(float3 v, float3 r) {
-    float3 result = v;
-    if (r.x != 0.0){
-        result = rotate(result, float3(normalize(r.x), 0.0, 0.0), r.x);
+    float4x4 rz = rotation3d(float3(0.0, 0.0, 1.0), 0);
+    float4x4 ry = rotation3d(float3(0.0, 1.0, 0.0), 0);
+    float4x4 rx = rotation3d(float3(1.0, 0.0, 0.0), 0);
+    if (r.z != 0.0){
+        rz = rotation3d(float3(0.0, 0.0, normalize(r.z)), r.z);
     }
     if (r.y != 0.0){
-        result = rotate(result, float3(0.0, normalize(r.y), 0.0), r.y);
+        ry = rotation3d(float3(0.0, normalize(r.y), 0.0), r.y);
     }
-    if (r.z != 0.0){
-        result = rotate(result, float3(0.0, 0.0, normalize(r.z)), r.z);
+    if (r.x != 0.0){
+        rx = rotation3d(float3(normalize(r.x), 0.0, 0.0), r.x);
     }
+    float4x4 m = mul(rz, mul(ry, rx));
 
-    return result;
+    return mul(m, float4(v, 1.0)).xyz;
 }
 
 float sdSphere(float3 pos, float radius)

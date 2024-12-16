@@ -70,12 +70,13 @@ Shader "FracturedRealm/RaymarchingShader"
                 float3 p = rotate(pos - _ObjectPositions[i].xyz, _ObjectRotations[i].xyz);
                 if (_ObjectTypes[i] == 0)
                 {
-                    dist += sdMengerSponge(p, average(_ObjectScales[i].xyz), 5);
+                    dist += sdCube(p, _ObjectScales[i].x / 2);
+                }
+                else if (_ObjectTypes[i] == 1)
+                {
+                    dist += sdMengerSponge(p, average(_ObjectScales[i].xyz), 6);
                 }
             }
-            // float Sphere1 = sdSphere(pos - float3(0, 0, -2.5), 1.0);
-            // float Cube1 = sdCube(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 0.5);
-            // float Cube2 = sdMengerSponge(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 1.0, 5);
             return dist;
         }
 
