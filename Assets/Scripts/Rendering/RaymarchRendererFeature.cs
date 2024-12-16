@@ -93,6 +93,12 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             _raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
             _raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
 
+            _raymarchMaterial.SetVectorArray("_ObjectPositions", new Vector4[] { new Vector4(0, 0, 3, 0) });
+            _raymarchMaterial.SetVectorArray("_ObjectRotations", new Vector4[] { new Vector4(0, 45, 45, 0) });
+            _raymarchMaterial.SetVectorArray("_ObjectScales", new Vector4[] { new Vector4(1, 1, 1, 0) });
+            _raymarchMaterial.SetFloatArray("_ObjectTypes", new float[] { 0 });
+            _raymarchMaterial.SetInt("_ObjectCount", 1);
+
             RenderGraphUtils.BlitMaterialParameters prePass = new(source, destination, _raymarchMaterial, 0);
             prePass.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
             renderGraph.AddBlitPass(prePass, "RaymarchingPrePass");

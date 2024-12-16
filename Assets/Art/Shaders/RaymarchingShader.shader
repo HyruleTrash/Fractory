@@ -17,6 +17,12 @@ Shader "FracturedRealm/RaymarchingShader"
         float _MaxDistance;
         float3 _LightDir;
 
+        float4 _ObjectPositions[100];
+        float4 _ObjectRotations[100];
+        float4 _ObjectScales[100];
+        float _ObjectTypes[100];
+        int _ObjectCount;
+
         struct C_Attributes
         {
             uint vertexID : SV_VertexID;
@@ -57,10 +63,20 @@ Shader "FracturedRealm/RaymarchingShader"
      
         float DistanceField(float3 pos)
         {
-            float Sphere1 = sdSphere(pos - float3(0, 0, -2.5), 1.0);
-            float Cube1 = sdCube(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 0.5);
-            float Cube2 = sdMengerSponge(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 1.0, 5);
-            return Cube2;
+            // loop trough all objects
+            float dist = 0;
+            for (int i = 0; i < _ObjectCount; i++)
+            {
+                float3 p = rotate(pos - _ObjectPositions[i].xyz, _ObjectRotations[i].xyz);
+                if (_ObjectTypes[i] == 0)
+                {
+                    dist += sdMengerSponge(p, average(_ObjectScales[i].xyz), 5);
+                }
+            }
+            // float Sphere1 = sdSphere(pos - float3(0, 0, -2.5), 1.0);
+            // float Cube1 = sdCube(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 0.5);
+            // float Cube2 = sdMengerSponge(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 1.0, 5);
+            return dist;
         }
 
         float3 GetNormal(float3 pos)

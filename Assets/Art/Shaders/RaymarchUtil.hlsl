@@ -16,6 +16,11 @@ float3 mod(float3 x, float y) {
     );
 }
 
+float average(float3 v)
+{
+    return (v.x + v.y + v.z) / 3.0;
+}
+
 float rcp(float value)
 {
     return 1.0 / value;
@@ -39,10 +44,25 @@ float4x4 rotation3d(float3 axis, float angle) {
         0.0,                                0.0,                                0.0,                                1.0
     );
 }
-  
+
 float3 rotate(float3 v, float3 axis, float angle) {
     float4x4 m = rotation3d(axis, angle);
     return mul(m, float4(v, 1.0)).xyz;
+}
+
+float3 rotate(float3 v, float3 r) {
+    float3 result = v;
+    if (r.x != 0.0){
+        result = rotate(result, float3(normalize(r.x), 0.0, 0.0), r.x);
+    }
+    if (r.y != 0.0){
+        result = rotate(result, float3(0.0, normalize(r.y), 0.0), r.y);
+    }
+    if (r.z != 0.0){
+        result = rotate(result, float3(0.0, 0.0, normalize(r.z)), r.z);
+    }
+
+    return result;
 }
 
 float sdSphere(float3 pos, float radius)
