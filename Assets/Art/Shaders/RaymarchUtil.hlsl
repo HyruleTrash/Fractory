@@ -16,19 +16,52 @@ float3 mod(float3 x, float y) {
     );
 }
 
+float rcp(float value)
+{
+    return 1.0 / value;
+}
+
+float LinearEyeDepth(float cameraDepth, float near, float far)
+{
+    return rcp(_ZBufferParams.z * cameraDepth + _ZBufferParams.w);
+}
+
+float4x4 rotation3d(float3 axis, float angle) {
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+
+    return float4x4(
+        oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+        oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+        oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+        0.0,                                0.0,                                0.0,                                1.0
+    );
+}
+  
+float3 rotate(float3 v, float3 axis, float angle) {
+    float4x4 m = rotation3d(axis, angle);
+    return mul(m, float4(v, 1.0)).xyz;
+}
+
 float sdSphere(float3 pos, float radius)
 {
     return length(pos) - radius;
 }
 
 float sdCube(float3 rayPos, float size) {
-    const float3 corner = float3(1.0, 1.0, 1.0) * size;
-    float3 ray = abs(rayPos); // fold ray into positive octant
-    float3 cornerToRay = ray - corner;
-    float cornerToRayMaxComponent = max(max(cornerToRay.x, cornerToRay.y), cornerToRay.z);
-    float distToInsideRay = min(cornerToRayMaxComponent, 0.0);
-    float3 closestToOutsideRay = max(cornerToRay, 0.0);
-    return length(closestToOutsideRay) + distToInsideRay;
+    float3 b = float3(size, size, size);
+    float3 q = abs(rayPos) - b;
+    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+    // const float3 corner = float3(1.0, 1.0, 1.0) * size;
+    // float3 ray = abs(rayPos); // fold ray into positive octant
+    // float3 cornerToRay = ray - corner;
+    // float cornerToRayMaxComponent = max(max(cornerToRay.x, cornerToRay.y), cornerToRay.z);
+    // float distToInsideRay = min(cornerToRayMaxComponent, 0.0);
+    // float3 closestToOutsideRay = max(cornerToRay, 0.0);
+
+    // return length(closestToOutsideRay) + distToInsideRay;
 } 
 
 float sdCross(float3 rayPos, float size) {
@@ -78,14 +111,4 @@ float sdMengerSponge(float3 rayPos, float size, int numIterations) {
         scale *= 3.0;
     }
     return mengerSpongeDist;
-}
-
-float LinearEyeDepth(float cameraDepth, float near, float far)
-{
-    return rcp(_ZBufferParams.z * cameraDepth + _ZBufferParams.w);
-}
-
-float rcp(float value)
-{
-    return 1.0 / value;
 }

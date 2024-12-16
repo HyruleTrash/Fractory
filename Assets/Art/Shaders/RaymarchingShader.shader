@@ -58,8 +58,8 @@ Shader "FracturedRealm/RaymarchingShader"
         float DistanceField(float3 pos)
         {
             float Sphere1 = sdSphere(pos - float3(0, 0, -2.5), 1.0);
-            //float Cube1 = sdSierpinskiCarpetCube(pos - float3(0, 1, -3), 1, 5);
-            float Cube2 = sdMengerSponge(pos - float3(0, 0, 3), 1.0, 5);
+            float Cube1 = sdCube(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 0.5);
+            float Cube2 = sdMengerSponge(rotate(pos - float3(0, 0, 3), float3(0, 1, 0), 45), 1.0, 5);
             return Cube2;
         }
 
