@@ -111,7 +111,7 @@ Shader "FracturedRealm/RaymarchingShader"
                 float3 pos = rayOrigin + rayDir * distanceTraveled;
                 // check for hit
                 float distance = DistanceField(pos);
-                if (distance < 0.01)
+                if (distance < 0.001)
                 {
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
