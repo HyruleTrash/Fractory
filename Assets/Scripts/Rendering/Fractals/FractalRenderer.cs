@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class FractalRenderer : MonoBehaviour {
     public FractalType type;
     [HideInInspector]
@@ -15,11 +15,9 @@ public class FractalRenderer : MonoBehaviour {
 
     private void Start() {
         manager = FindFirstObjectByType<FractalManager>();
-        
         if (manager == null) {
-            return;
+            Debug.LogError("FractalRenderer can only be used if a FractalManager exists in the scene.");
         }
-
         manager.fractalRenderers.Add(this);
     }
 

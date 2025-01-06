@@ -43,6 +43,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
     public class RaymarchPass : ScriptableRenderPass{
         public float maxDistance;
         public Transform light;
+        public Fractal[] fractals;
         private Material _raymarchMaterial;
         TextureHandle _source, _destination;
         private RenderTextureDescriptor textureDescriptor;
@@ -78,6 +79,11 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             if (!_source.IsValid() || !_destination.IsValid())
                 return;
 
+            fractals = _fractalManager.GetFractals();
+            if (fractals.Length == 0)
+                return;
+
+
             RenderGraphUtils.BlitMaterialParameters output = SetSettings(renderGraph, _destination, _source, cameraData);
 
             renderGraph.AddBlitPass(output, "RaymarchingPass");
@@ -98,7 +104,6 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             _raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
             _raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
 
-            Fractal[] fractals = _fractalManager.GetFractals();
             Vector4[] objectPositions = new Vector4[fractals.Length];
             Matrix4x4[] objectRotations = new Matrix4x4[fractals.Length];
             Vector4[] objectScales = new Vector4[fractals.Length];
@@ -109,20 +114,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
                 objectRotations[i] = Matrix4x4.TRS(Vector3.zero, fractals[i].rotation, Vector3.one);
                 objectScales[i] = new Vector4(fractals[i].scale.x, fractals[i].scale.y, fractals[i].scale.z, 0);
                 objectTypes[i] = (float)fractals[i].type;
-
-                Debug.Log("Fractal " + i + " rotation: " + objectRotations[i]);
             }
-
-            // temp data
-            // objectPositions = new Vector4[1];
-            // objectRotations = new Vector4[1];
-            // objectScales = new Vector4[1];
-            // objectTypes = new float[1];
-            // objectPositions[0] = new Vector4(0, 0, 0, 0);
-            // objectRotations[0] = new Vector4(0, 0, 0, 0);
-            // objectScales[0] = new Vector4(1, 1, 1, 0);
-            // objectTypes[0] = 1;
-            // Debug.Log("Fractals: " + fractals.Length);
 
             _raymarchMaterial.SetVectorArray("_ObjectPositions", objectPositions);
             _raymarchMaterial.SetMatrixArray("_ObjectRotations", objectRotations);
