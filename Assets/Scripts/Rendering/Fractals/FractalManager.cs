@@ -17,8 +17,7 @@ public class FractalManager : GlobalMonoBehaviour {
             FractalRenderer renderer = fractalRenderers[i];
             Fractal fractal = new Fractal();
             fractal.position = renderer.transform.position;
-            fractal.rotation = renderer.transform.eulerAngles * Mathf.Deg2Rad;
-            // fractal.rotation = new Vector3(fractal.rotation.x % (2 * Mathf.PI), fractal.rotation.y % (2 * Mathf.PI), fractal.rotation.z % (2 * Mathf.PI));
+            fractal.rotation = renderer.transform.rotation;
             fractal.scale = renderer.transform.localScale;
             fractal.type = renderer.type;
             fractals[i] = fractal;

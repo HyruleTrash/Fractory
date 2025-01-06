@@ -18,7 +18,7 @@ Shader "FracturedRealm/RaymarchingShader"
         float3 _LightDir;
 
         float4 _ObjectPositions[100];
-        float4 _ObjectRotations[100];
+        float4x4 _ObjectRotations[100];
         float4 _ObjectScales[100];
         float _ObjectTypes[100];
         int _ObjectCount = 0;
@@ -71,7 +71,7 @@ Shader "FracturedRealm/RaymarchingShader"
             }
             for (int i = 0; i < _ObjectCount; i++)
             {
-                float3 p = rotate(pos - _ObjectPositions[i].xyz, _ObjectRotations[i].xyz);
+                float3 p = mul(pos - _ObjectPositions[i].xyz, _ObjectRotations[i]);
                 if (_ObjectTypes[i] == 0)
                 {
                     dist += sdCube(p, _ObjectScales[i].x / 2);

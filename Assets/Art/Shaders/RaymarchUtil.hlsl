@@ -31,53 +31,6 @@ float LinearEyeDepth(float cameraDepth, float near, float far)
     return rcp(_ZBufferParams.z * cameraDepth + _ZBufferParams.w);
 }
 
-float3x3 rotation3d(float3 axis, float angle) {
-    axis = normalize(axis);
-    
-    if (axis.x != 0.0) {
-        return float3x3(
-            1.0, 0.0, 0.0,
-            0.0, cos(angle), -sin(angle),
-            0.0, sin(angle), cos(angle)
-        );
-    } else if (axis.y != 0.0) {
-        return float3x3(
-            cos(angle), 0.0, sin(angle),
-            0.0, 1.0, 0.0,
-            -sin(angle), 0.0, cos(angle)
-        );
-    } else {
-        return float3x3(
-            cos(angle), -sin(angle), 0.0,
-            sin(angle), cos(angle), 0.0,
-            0.0, 0.0, 1.0
-        );
-    }
-}
-
-float3 rotate(float3 v, float3 axis, float angle) {
-    float3x3 m = rotation3d(axis, angle);
-    return mul(m, v);
-}
-
-float3 rotate(float3 v, float3 r) {
-    float3x3 rx = rotation3d(float3(1.0, 0.0, 0.0), 0);
-    float3x3 ry = rotation3d(float3(0.0, 1.0, 0.0), 0);
-    float3x3 rz = rotation3d(float3(0.0, 0.0, 1.0), 0);
-    if (r.x != 0.0){
-        rx = rotation3d(float3(r.x, 0.0, 0.0), -r.x);
-    }
-    if (r.y != 0.0){
-        ry = rotation3d(float3(0.0, r.y, 0.0), -r.y);
-    }
-    if (r.z != 0.0){
-        rz = rotation3d(float3(0.0, 0.0, r.z), -r.z);
-    }
-    float3x3 m = mul(mul(rx, ry), rz);
-
-    return mul(m, v);
-}
-
 float sdSphere(float3 pos, float radius)
 {
     return length(pos) - radius;
