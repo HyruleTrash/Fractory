@@ -21,7 +21,7 @@ Shader "FracturedRealm/RaymarchingShader"
         float4 _ObjectRotations[100];
         float4 _ObjectScales[100];
         float _ObjectTypes[100];
-        int _ObjectCount;
+        int _ObjectCount = 0;
 
         struct C_Attributes
         {
@@ -65,6 +65,10 @@ Shader "FracturedRealm/RaymarchingShader"
         {
             // loop trough all objects
             float dist = 0;
+            if (_ObjectCount == 0)
+            {
+                return dist;
+            }
             for (int i = 0; i < _ObjectCount; i++)
             {
                 float3 p = rotate(pos - _ObjectPositions[i].xyz, _ObjectRotations[i].xyz);
@@ -111,7 +115,7 @@ Shader "FracturedRealm/RaymarchingShader"
                 {
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
-                    result = float4(float3(1, 1, 1) * light, 1);
+                    result = float4(COLOR * light, 1);
                     break;
                 }
 

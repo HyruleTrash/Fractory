@@ -52,4 +52,12 @@ public static class MathUtil
     public static Vector3 DirectionTowards(Vector3 from, Vector3 to){
         return (to - from).normalized;
     }
+
+    public static Vector3 NormalizeDegrees(Vector3 euler){
+        return new Vector3(NormalizeDegree(euler.x), NormalizeDegree(euler.y), NormalizeDegree(euler.z));
+    }
+
+    public static float NormalizeDegree(float degree){
+        return degree % 360;
+    }
 }

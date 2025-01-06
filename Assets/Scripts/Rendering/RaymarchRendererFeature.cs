@@ -106,12 +106,23 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             for (int i = 0; i < fractals.Length; i++)
             {
                 objectPositions[i] = new Vector4(fractals[i].position.x, fractals[i].position.y, fractals[i].position.z, 0);
-                objectRotations[i] = new Vector4(fractals[i].rotation.x * Mathf.Deg2Rad, fractals[i].rotation.y * Mathf.Deg2Rad, fractals[i].rotation.z * Mathf.Deg2Rad, 0);
+                objectRotations[i] = new Vector4(fractals[i].rotation.x, fractals[i].rotation.y, fractals[i].rotation.z, 0);
                 objectScales[i] = new Vector4(fractals[i].scale.x, fractals[i].scale.y, fractals[i].scale.z, 0);
                 objectTypes[i] = (float)fractals[i].type;
 
                 Debug.Log("Fractal " + i + " rotation: " + objectRotations[i]);
             }
+
+            // temp data
+            // objectPositions = new Vector4[1];
+            // objectRotations = new Vector4[1];
+            // objectScales = new Vector4[1];
+            // objectTypes = new float[1];
+            // objectPositions[0] = new Vector4(0, 0, 0, 0);
+            // objectRotations[0] = new Vector4(0, 0, 0, 0);
+            // objectScales[0] = new Vector4(1, 1, 1, 0);
+            // objectTypes[0] = 1;
+            // Debug.Log("Fractals: " + fractals.Length);
 
             _raymarchMaterial.SetVectorArray("_ObjectPositions", objectPositions);
             _raymarchMaterial.SetVectorArray("_ObjectRotations", objectRotations);

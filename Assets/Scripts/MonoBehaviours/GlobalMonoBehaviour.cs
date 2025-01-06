@@ -18,6 +18,9 @@ public class GlobalMonoBehaviour : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        DontDestroyOnLoad(this.gameObject);
+        if (Application.isPlaying)
+        {
+            DontDestroyOnLoad(this.gameObject);        
+        }
     }
 }
