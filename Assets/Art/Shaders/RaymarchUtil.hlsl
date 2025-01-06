@@ -31,61 +31,51 @@ float LinearEyeDepth(float cameraDepth, float near, float far)
     return rcp(_ZBufferParams.z * cameraDepth + _ZBufferParams.w);
 }
 
-float3 COLOR;
-
-float4x4 rotation3d(float3 axis, float angle) {
+float3x3 rotation3d(float3 axis, float angle) {
     axis = normalize(axis);
     
-    float s;
-    float c;
-    s = sin(angle);
-    c = cos(angle);
-
-    float a = modf(angle, (PI / 2) * 6);
-    COLOR = float3(a,a,a);
-
-    if (a > 0 && a < PI / 2) {
-        // COLOR = float3(0, 1, 0);
-        s = sin(angle);
-        c = cos(angle);
+    if (axis.x != 0.0) {
+        return float3x3(
+            1.0, 0.0, 0.0,
+            0.0, cos(angle), -sin(angle),
+            0.0, sin(angle), cos(angle)
+        );
+    } else if (axis.y != 0.0) {
+        return float3x3(
+            cos(angle), 0.0, sin(angle),
+            0.0, 1.0, 0.0,
+            -sin(angle), 0.0, cos(angle)
+        );
+    } else {
+        return float3x3(
+            cos(angle), -sin(angle), 0.0,
+            sin(angle), cos(angle), 0.0,
+            0.0, 0.0, 1.0
+        );
     }
-    else {
-        // COLOR = float3(1, 0, 0);
-        s = cos(angle);
-        c = sin(angle);
-    }
-
-    float oc = 1.0 - c;
-
-    return float4x4(
-        oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
-        oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
-        oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
-        0.0,                                0.0,                                0.0,                                1.0
-    );
 }
 
 float3 rotate(float3 v, float3 axis, float angle) {
-    float4x4 m = rotation3d(axis, angle);
-    return mul(m, float4(v, 1.0)).xyz;
+    float3x3 m = rotation3d(axis, angle);
+    return mul(m, v);
 }
 
 float3 rotate(float3 v, float3 r) {
-    float4x4 rz = rotation3d(float3(0.0, 0.0, 1.0), 0);
-    float4x4 ry = rotation3d(float3(0.0, 1.0, 0.0), 0);
-    float4x4 rx = rotation3d(float3(1.0, 0.0, 0.0), 0);
-    if (r.z != 0.0){
-        rz = rotation3d(float3(0.0, 0.0, r.z), r.z);
+    float3x3 rx = rotation3d(float3(1.0, 0.0, 0.0), 0);
+    float3x3 ry = rotation3d(float3(0.0, 1.0, 0.0), 0);
+    float3x3 rz = rotation3d(float3(0.0, 0.0, 1.0), 0);
+    if (r.x != 0.0){
+        rx = rotation3d(float3(r.x, 0.0, 0.0), -r.x);
     }
     if (r.y != 0.0){
-        ry = rotation3d(float3(0.0, r.y, 0.0), r.y);
+        ry = rotation3d(float3(0.0, r.y, 0.0), -r.y);
     }
-    if (r.x != 0.0){
-        rx = rotation3d(float3(r.x, 0.0, 0.0), r.x);
+    if (r.z != 0.0){
+        rz = rotation3d(float3(0.0, 0.0, r.z), -r.z);
     }
-    float4x4 m = mul(rz, mul(ry, rx));
+    float3x3 m = mul(mul(rx, ry), rz);
 
-    return mul(m, float4(v, 1.0)).xyz;
+    return mul(m, v);
 }
 
 float sdSphere(float3 pos, float radius)
@@ -97,14 +87,6 @@ float sdCube(float3 rayPos, float size) {
     float3 b = float3(size, size, size);
     float3 q = abs(rayPos) - b;
     return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
-    // const float3 corner = float3(1.0, 1.0, 1.0) * size;
-    // float3 ray = abs(rayPos); // fold ray into positive octant
-    // float3 cornerToRay = ray - corner;
-    // float cornerToRayMaxComponent = max(max(cornerToRay.x, cornerToRay.y), cornerToRay.z);
-    // float distToInsideRay = min(cornerToRayMaxComponent, 0.0);
-    // float3 closestToOutsideRay = max(cornerToRay, 0.0);
-
-    // return length(closestToOutsideRay) + distToInsideRay;
 } 
 
 float sdCross(float3 rayPos, float size) {

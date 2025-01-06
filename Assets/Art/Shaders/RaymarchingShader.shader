@@ -115,7 +115,7 @@ Shader "FracturedRealm/RaymarchingShader"
                 {
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
-                    result = float4(COLOR * light, 1);
+                    result = float4(float3(1,1,1) * light, 1);
                     break;
                 }
 
