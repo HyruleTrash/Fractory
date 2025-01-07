@@ -13,6 +13,7 @@ Shader "FracturedRealm/RaymarchingShader"
         float _Near;
         float _Far;
         float4 _CamWorldPos;
+        float3 _CamForwardOrtho;
         float4x4 _CamFrustum, _CamToWorld;
         float _MaxDistance;
         float3 _LightDir;
@@ -54,9 +55,17 @@ Shader "FracturedRealm/RaymarchingShader"
             output.positionCS = pos;
             output.texcoord   = DYNAMIC_SCALING_APPLY_SCALEBIAS(uv);
 
-            output.ray = _CamFrustum[input.vertexID].xyz;
-            output.ray /= abs(output.ray.z);
-            output.ray = mul(_CamToWorld, output.ray);
+            if (unity_OrthoParams.w == 0)
+            {// perspective ray casting
+                output.ray = _CamFrustum[input.vertexID].xyz;
+                output.ray /= abs(output.ray.z);
+                output.ray = mul(_CamToWorld, output.ray);
+            }
+            else
+            {// orthographic ray casting
+                output.ray = _CamFrustum[input.vertexID].xyz;
+                output.ray = mul(_CamToWorld, output.ray);
+            }
 
             return output;
         }
@@ -111,7 +120,7 @@ Shader "FracturedRealm/RaymarchingShader"
                 float3 pos = rayOrigin + rayDir * distanceTraveled;
                 // check for hit
                 float distance = DistanceField(pos);
-                if (distance < 0.001)
+                if (distance < 0.0001)
                 {
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
@@ -138,10 +147,19 @@ Shader "FracturedRealm/RaymarchingShader"
 
             float3 oldColor = FragBilinear(inputAlt).rgb;
 
-            float3 rayDir = normalize(input.ray.xyz);
-            float3 rayOrigin = _CamWorldPos.xyz;
+            float3 rayDir;
+            float3 rayOrigin;
+            if (unity_OrthoParams.w == 0)
+            {// perspective ray casting
+                rayDir = normalize(input.ray.xyz);
+                rayOrigin = _CamWorldPos.xyz;
+            }
+            else
+            {// orthographic ray casting
+                rayDir = normalize(_CamForwardOrtho);
+                rayOrigin = input.ray.xyz + _CamWorldPos.xyz;
+            }
             float4 color = RayMarching(rayOrigin, rayDir, depth);
-            
             return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);
         }
     

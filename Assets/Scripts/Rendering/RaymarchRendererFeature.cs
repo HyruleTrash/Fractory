@@ -8,7 +8,6 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
 {
     public Shader shader;
     private RaymarchPass _raymarchPass;
-    private Material material;
     public float maxDistance = 100.0f;
 
     public override void Create()
@@ -16,8 +15,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
         if (shader == null)
             return;
 
-        material = new Material(shader);
-        _raymarchPass = new RaymarchPass(material, maxDistance);
+        _raymarchPass = new RaymarchPass(shader, maxDistance);
 
         _raymarchPass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
@@ -27,31 +25,20 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
         renderer.EnqueuePass(_raymarchPass);
     }
 
-    protected override void Dispose(bool disposing)
-    {
-        if (Application.isPlaying)
-        {
-            Destroy(material);
-        }
-        else
-        {
-            DestroyImmediate(material);
-        }
-    }
-
-
     public class RaymarchPass : ScriptableRenderPass{
         public float maxDistance;
         public Transform light;
         public Fractal[] fractals;
+        private Shader shader;
         private Material _raymarchMaterial;
         TextureHandle _source, _destination;
         private RenderTextureDescriptor textureDescriptor;
         private FractalManager _fractalManager;
 
-        public RaymarchPass(Material material, float maxDistance)
+        public RaymarchPass(Shader shader, float maxDistance)
         {
-            _raymarchMaterial = material;
+            this.shader = shader;
+            _raymarchMaterial = new Material(shader);
             textureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
             this.maxDistance = maxDistance;
         }
@@ -83,21 +70,22 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             if (fractals.Length == 0)
                 return;
 
-
+            if (!_raymarchMaterial){
+                _raymarchMaterial = new Material(shader);
+                return;
+            }
+            
             RenderGraphUtils.BlitMaterialParameters output = SetSettings(renderGraph, _destination, _source, cameraData);
 
             renderGraph.AddBlitPass(output, "RaymarchingPass");
         }
 
         private RenderGraphUtils.BlitMaterialParameters SetSettings(RenderGraph renderGraph, TextureHandle destination, TextureHandle source, UniversalCameraData cameraData){
-            if (!_raymarchMaterial)
-            {
-                return new(destination, source, _raymarchMaterial, 0);
-            }
             light = GameObject.Find("Directional Light").transform;
 
-            _raymarchMaterial.SetMatrix("_CamFrustum", CamFrustum(cameraData.camera));
+            _raymarchMaterial.SetMatrix("_CamFrustum", MathUtil.CamFrustum(cameraData.camera));
             _raymarchMaterial.SetMatrix("_CamToWorld", cameraData.camera.cameraToWorldMatrix);
+            _raymarchMaterial.SetVector("_CamForwardOrtho", cameraData.camera.transform.forward * cameraData.camera.farClipPlane);
             _raymarchMaterial.SetVector("_CamWorldPos", cameraData.worldSpaceCameraPos);
             _raymarchMaterial.SetFloat("_Near", cameraData.camera.nearClipPlane);
             _raymarchMaterial.SetFloat("_Far", cameraData.camera.farClipPlane);
@@ -130,44 +118,6 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             output.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
             
             return output;
-        }
-
-        private Matrix4x4 CamFrustum(Camera cam)
-        {
-            Matrix4x4 frustum = Matrix4x4.identity;
-
-            if (cam.orthographic)
-            {
-                Vector3 goUp = Vector3.up * cam.orthographicSize;
-                Vector3 goRight = Vector3.right * cam.orthographicSize;
-
-                Vector3 TL = -Vector3.forward - goRight + goUp;
-                Vector3 TR = -Vector3.forward + goRight + goUp;
-                Vector3 BR = -Vector3.forward + goRight - goUp;
-                Vector3 BL = -Vector3.forward - goRight - goUp;
-
-                frustum.SetRow(0, TL);
-                frustum.SetRow(1, BL);
-                frustum.SetRow(2, BR);
-                frustum.SetRow(3, TR);
-            }else{
-                float fov = Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-
-                Vector3 goUp = Vector3.up * fov;
-                Vector3 goRight = Vector3.right * fov * cam.aspect;
-
-                Vector3 TL = -Vector3.forward - goRight + goUp;
-                Vector3 TR = -Vector3.forward + goRight + goUp;
-                Vector3 BR = -Vector3.forward + goRight - goUp;
-                Vector3 BL = -Vector3.forward - goRight - goUp;
-
-                frustum.SetRow(0, TL);
-                frustum.SetRow(1, BL);
-                frustum.SetRow(2, BR);
-                frustum.SetRow(3, TR);
-            }
-
-            return frustum;
         }
     }
 }
