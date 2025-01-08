@@ -1,8 +1,10 @@
 using UnityEngine;
+using System.Runtime.InteropServices;
 
-public class Fractal {
-    public Vector3 position;
-    public Quaternion rotation;
-    public Vector3 scale;
-    public FractalType type;
+[StructLayout(LayoutKind.Sequential)]
+public struct Fractal {
+    public Vector4 position;
+    public Matrix4x4 rotation;
+    public Vector4 scale;
+    public float type;
 }

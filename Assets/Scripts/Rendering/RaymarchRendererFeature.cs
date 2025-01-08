@@ -3,6 +3,8 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.RenderGraphModule.Util;
 using UnityEngine.Rendering.Universal;
+using System.Runtime.InteropServices;
+using Unity.VisualScripting;
 
 public class RaymarchRendererFeature : ScriptableRendererFeature
 {
@@ -25,22 +27,42 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
         renderer.EnqueuePass(_raymarchPass);
     }
 
+    protected override void Dispose(bool disposing)
+    {
+        if (Application.isPlaying)
+        {
+            Destroy(_raymarchPass.raymarchMaterial);
+        }
+        else
+        {
+            DestroyImmediate(_raymarchPass.raymarchMaterial);
+        }
+
+        if (_raymarchPass.fractalBuffer != null){
+            _raymarchPass.fractalBuffer.Release();
+            _raymarchPass.fractalBuffer = null;
+        }
+    }
+
     public class RaymarchPass : ScriptableRenderPass{
         public float maxDistance;
         public Transform light;
         public Fractal[] fractals;
-        private Shader shader;
-        private Material _raymarchMaterial;
+        private Shader _shader;
+        public ComputeBuffer fractalBuffer;
+        private int _fractalBufferSize;
+        public Material raymarchMaterial;
         TextureHandle _source, _destination;
-        private RenderTextureDescriptor textureDescriptor;
+        private RenderTextureDescriptor _textureDescriptor;
         private FractalManager _fractalManager;
 
         public RaymarchPass(Shader shader, float maxDistance)
         {
-            this.shader = shader;
-            _raymarchMaterial = new Material(shader);
-            textureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
+            this._shader = shader;
+            raymarchMaterial = new Material(shader);
+            _textureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
             this.maxDistance = maxDistance;
+            _fractalBufferSize = Marshal.SizeOf(typeof(Fractal));
         }
 
         public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData){
@@ -55,12 +77,12 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
                 return;
 
             // Set the blur texture size to be the same as the camera target size.
-            textureDescriptor.width = cameraData.cameraTargetDescriptor.width;
-            textureDescriptor.height = cameraData.cameraTargetDescriptor.height;
-            textureDescriptor.depthBufferBits = 0;
+            _textureDescriptor.width = cameraData.cameraTargetDescriptor.width;
+            _textureDescriptor.height = cameraData.cameraTargetDescriptor.height;
+            _textureDescriptor.depthBufferBits = 0;
 
             _source = resourceData.activeColorTexture;
-            _destination = UniversalRenderer.CreateRenderGraphTexture(renderGraph, textureDescriptor, "RaymarchPass_tex", false);
+            _destination = UniversalRenderer.CreateRenderGraphTexture(renderGraph, _textureDescriptor, "RaymarchPass_tex", false);
             
             // This check is to avoid an error from the material preview in the scene
             if (!_source.IsValid() || !_destination.IsValid())
@@ -70,51 +92,58 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             if (fractals.Length == 0)
                 return;
 
-            if (!_raymarchMaterial){
-                _raymarchMaterial = new Material(shader);
+            if (!raymarchMaterial){
+                raymarchMaterial = new Material(_shader);
                 return;
             }
             
             RenderGraphUtils.BlitMaterialParameters output = SetSettings(renderGraph, _destination, _source, cameraData);
 
             renderGraph.AddBlitPass(output, "RaymarchingPass");
+
+            // if (fractalBuffer != null){
+            //     fractalBuffer.Release();
+            //     fractalBuffer = null;
+            // }
         }
 
         private RenderGraphUtils.BlitMaterialParameters SetSettings(RenderGraph renderGraph, TextureHandle destination, TextureHandle source, UniversalCameraData cameraData){
             light = GameObject.Find("Directional Light").transform;
 
-            _raymarchMaterial.SetMatrix("_CamFrustum", MathUtil.CamFrustum(cameraData.camera));
-            _raymarchMaterial.SetMatrix("_CamToWorld", cameraData.camera.cameraToWorldMatrix);
-            _raymarchMaterial.SetVector("_CamForwardOrtho", cameraData.camera.transform.forward);
-            _raymarchMaterial.SetVector("_CamWorldPos", cameraData.worldSpaceCameraPos);
-            _raymarchMaterial.SetFloat("_Near", cameraData.camera.nearClipPlane);
-            _raymarchMaterial.SetFloat("_Far", cameraData.camera.farClipPlane);
-            _raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
-            _raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
+            raymarchMaterial.SetMatrix("_CamFrustum", MathUtil.CamFrustum(cameraData.camera));
+            raymarchMaterial.SetMatrix("_CamToWorld", cameraData.camera.cameraToWorldMatrix);
+            raymarchMaterial.SetVector("_CamForwardOrtho", cameraData.camera.transform.forward);
+            raymarchMaterial.SetVector("_CamWorldPos", cameraData.worldSpaceCameraPos);
+            raymarchMaterial.SetFloat("_Near", cameraData.camera.nearClipPlane);
+            raymarchMaterial.SetFloat("_Far", cameraData.camera.farClipPlane);
+            raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
+            raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
 
-            Vector4[] objectPositions = new Vector4[fractals.Length];
-            Matrix4x4[] objectRotations = new Matrix4x4[fractals.Length];
-            Vector4[] objectScales = new Vector4[fractals.Length];
-            float[] objectTypes = new float[fractals.Length];
-            for (int i = 0; i < fractals.Length; i++)
-            {
-                objectPositions[i] = new Vector4(fractals[i].position.x, fractals[i].position.y, fractals[i].position.z, 0);
-                objectRotations[i] = Matrix4x4.TRS(Vector3.zero, fractals[i].rotation, Vector3.one);
-                objectScales[i] = new Vector4(fractals[i].scale.x, fractals[i].scale.y, fractals[i].scale.z, 0);
-                objectTypes[i] = (float)fractals[i].type;
+            raymarchMaterial.SetInt("_ObjectCount", fractals.Length);
+
+            if (fractalBuffer == null){
+                fractalBuffer = new ComputeBuffer(fractals.Length, _fractalBufferSize, ComputeBufferType.Structured);
+                fractalBuffer.name = "Fractal Buffer";
             }
+            if (fractals.Length != fractalBuffer.count){
+                fractalBuffer.SetCounterValue((uint)fractals.Length);
+            }
+            raymarchMaterial.SetBuffer("_ObjectsBuffer", fractalBuffer);
+            fractalBuffer.SetData(fractals);
 
-            _raymarchMaterial.SetVectorArray("_ObjectPositions", objectPositions);
-            _raymarchMaterial.SetMatrixArray("_ObjectRotations", objectRotations);
-            _raymarchMaterial.SetVectorArray("_ObjectScales", objectScales);
-            _raymarchMaterial.SetFloatArray("_ObjectTypes", objectTypes);
-            _raymarchMaterial.SetInt("_ObjectCount", fractals.Length);
+            Fractal[] temp = new Fractal[fractals.Length];
+            fractalBuffer.GetData(temp);
+            string tempTwo = "";
+            for (int i = 0; i < temp.Length; i++){
+                tempTwo += JsonUtility.ToJson(temp[i]) + "\n";
+            }
+            Debug.Log(tempTwo);
 
-            RenderGraphUtils.BlitMaterialParameters prePass = new(source, destination, _raymarchMaterial, 0);
+            RenderGraphUtils.BlitMaterialParameters prePass = new(source, destination, raymarchMaterial, 0);
             prePass.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
             renderGraph.AddBlitPass(prePass, "RaymarchingPrePass");
 
-            RenderGraphUtils.BlitMaterialParameters output = new(destination, source, _raymarchMaterial, 1);
+            RenderGraphUtils.BlitMaterialParameters output = new(destination, source, raymarchMaterial, 1);
             output.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
             
             return output;

@@ -38,6 +38,12 @@ float LinearEyeDepth(float cameraDepth, float near, float far)
     return rcp(_ZBufferParams.z * cameraDepth + _ZBufferParams.w);
 }
 
+float opSmoothUnion( float d1, float d2, float k )
+{
+    float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+    return lerp( d2, d1, h ) - k*h*(1.0-h);
+}
+
 float sdSphere(float3 pos, float radius)
 {
     return length(pos) - radius;

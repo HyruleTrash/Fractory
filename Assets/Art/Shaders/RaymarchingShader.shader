@@ -18,11 +18,14 @@ Shader "FracturedRealm/RaymarchingShader"
         float _MaxDistance;
         float3 _LightDir;
 
-        float4 _ObjectPositions[100];
-        float4x4 _ObjectRotations[100];
-        float4 _ObjectScales[100];
-        float _ObjectTypes[100];
-        int _ObjectCount = 0;
+        struct Object{
+            float4 position;
+            float4x4 rotation;
+            float4 scale;
+            float type;
+        };
+        
+        StructuredBuffer<Object> _ObjectsBuffer;
 
         struct C_Attributes
         {
@@ -74,21 +77,36 @@ Shader "FracturedRealm/RaymarchingShader"
         {
             // loop trough all objects
             float dist = 0;
-            if (_ObjectCount == 0)
+            uint objectCount;
+            uint memSize;
+            _ObjectsBuffer.GetDimensions(objectCount, memSize);
+            for (uint i = 0; i < objectCount; i++)
             {
-                return dist;
+                int index = i;
+                float3 p = mul(pos - _ObjectsBuffer[index].position.xyz,  _ObjectsBuffer[index].rotation);
+                if ( _ObjectsBuffer[index].type == 0)
+                {
+                    dist += sdCube(p,  _ObjectsBuffer[index].scale.x / 2);
+                }
+                else if ( _ObjectsBuffer[index].type == 1)
+                {
+                    dist += sdMengerSponge(p, average( _ObjectsBuffer[index].scale.xyz), 2);
+                }
+                if (i == 0)
+                {
+                    return dist; // heya future me, for now added this to only render the first object
+                    /*
+                        for some odd reason the first object dissapears when adding more objects
+                        Figure out why this is happening and fix it
+                        Most likely has to do with the fact that we're adding the distances together in this way
+                        To fix it we need to add the distances together in a different way
+                        That being: the minimum distance probably
+                    */
+                }
             }
-            for (int i = 0; i < _ObjectCount; i++)
+            if (objectCount == 0)
             {
-                float3 p = mul(pos - _ObjectPositions[i].xyz, _ObjectRotations[i]);
-                if (_ObjectTypes[i] == 0)
-                {
-                    dist += sdCube(p, _ObjectScales[i].x / 2);
-                }
-                else if (_ObjectTypes[i] == 1)
-                {
-                    dist += sdMengerSponge(p, average(_ObjectScales[i].xyz), 2);
-                }
+                return _MaxDistance;
             }
             return dist;
         }
@@ -125,9 +143,6 @@ Shader "FracturedRealm/RaymarchingShader"
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
                     result = float4(float3(1,1,1) * light, 1);
-                    // if (unity_OrthoParams.w != 0){
-                    //     result = float4(float3(1,1,1) * distanceTraveled, 1);
-                    // }
                     break;
                 }
 
@@ -163,6 +178,17 @@ Shader "FracturedRealm/RaymarchingShader"
                 rayOrigin = input.ray.xyz + _CamWorldPos.xyz;
                 depth = CorrectDepth(tex2D(_CameraDepthTexture, input.texcoord).r, _Near, _Far);
             }
+
+            // temp code delete later
+            // uint objectCount;
+            // uint memSize;
+            // _ObjectsBuffer.GetDimensions(objectCount, memSize);
+            // for (uint i = 0; i < objectCount; i++){
+            //     if (i > 0){
+            //         return float4(float3(0.1,0.1,0.1) * length(_ObjectsBuffer[1].position.xyz), 1);
+            //     }
+            // }
+
             float4 color = RayMarching(rayOrigin, rayDir, depth);
             return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);
         }
@@ -177,9 +203,10 @@ Shader "FracturedRealm/RaymarchingShader"
         Pass
         {
             Name "PreFrag"
-
+            
             HLSLPROGRAM
             
+            #pragma target 5.0
             #pragma vertex Vert
             #pragma fragment FragBilinear
             
@@ -192,6 +219,7 @@ Shader "FracturedRealm/RaymarchingShader"
 
             HLSLPROGRAM
             
+            #pragma target 5.0
             #pragma vertex C_Vert
             #pragma fragment Frag
             
