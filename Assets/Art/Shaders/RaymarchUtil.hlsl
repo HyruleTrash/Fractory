@@ -26,6 +26,13 @@ float rcp(float value)
     return 1.0 / value;
 }
 
+float CorrectDepth(float rawDepth, float near, float far)
+{
+    float persp = LinearEyeDepth(rawDepth, near, far);
+    float ortho = (_ProjectionParams.z-_ProjectionParams.y)*(1-rawDepth)+_ProjectionParams.y;
+    return lerp(persp,ortho,unity_OrthoParams.w);
+}
+
 float LinearEyeDepth(float cameraDepth, float near, float far)
 {
     return rcp(_ZBufferParams.z * cameraDepth + _ZBufferParams.w);

@@ -87,7 +87,7 @@ Shader "FracturedRealm/RaymarchingShader"
                 }
                 else if (_ObjectTypes[i] == 1)
                 {
-                    dist += sdMengerSponge(p, average(_ObjectScales[i].xyz), 6);
+                    dist += sdMengerSponge(p, average(_ObjectScales[i].xyz), 2);
                 }
             }
             return dist;
@@ -125,6 +125,9 @@ Shader "FracturedRealm/RaymarchingShader"
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
                     result = float4(float3(1,1,1) * light, 1);
+                    // if (unity_OrthoParams.w != 0){
+                    //     result = float4(float3(1,1,1) * distanceTraveled, 1);
+                    // }
                     break;
                 }
 
@@ -138,26 +141,27 @@ Shader "FracturedRealm/RaymarchingShader"
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-            float depth = LinearEyeDepth(tex2D(_CameraDepthTexture, input.texcoord).r, _Near, _Far);
-            depth *= length(input.ray);
-
+            
             Varyings inputAlt;
             inputAlt.texcoord = input.texcoord;
             inputAlt.positionCS = input.positionCS;
-
+            
             float3 oldColor = FragBilinear(inputAlt).rgb;
-
+            
             float3 rayDir;
             float3 rayOrigin;
+            float depth = LinearEyeDepth(tex2D(_CameraDepthTexture, input.texcoord).r, _Near, _Far);
             if (unity_OrthoParams.w == 0)
             {// perspective ray casting
                 rayDir = normalize(input.ray.xyz);
                 rayOrigin = _CamWorldPos.xyz;
+                depth *= length(input.ray);
             }
             else
             {// orthographic ray casting
-                rayDir = normalize(_CamForwardOrtho);
+                rayDir = normalize(_CamForwardOrtho * _Far);
                 rayOrigin = input.ray.xyz + _CamWorldPos.xyz;
+                depth = CorrectDepth(tex2D(_CameraDepthTexture, input.texcoord).r, _Near, _Far);
             }
             float4 color = RayMarching(rayOrigin, rayDir, depth);
             return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);

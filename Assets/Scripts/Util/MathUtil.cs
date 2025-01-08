@@ -70,10 +70,11 @@ public static class MathUtil
             Vector3 goUp = Vector3.up * cam.orthographicSize;
             Vector3 goRight = Vector3.right * cam.orthographicSize * cam.aspect;
             
-            Vector3 TL = -goRight + goUp - Vector3.forward * cam.nearClipPlane;
-            Vector3 TR = goRight + goUp - Vector3.forward * cam.nearClipPlane;
-            Vector3 BR = goRight - goUp - Vector3.forward * cam.nearClipPlane;
-            Vector3 BL = -goRight - goUp - Vector3.forward * cam.nearClipPlane;
+            Vector3 nearClipOffset = Vector3.forward * cam.nearClipPlane;
+            Vector3 TL = -goRight + goUp - nearClipOffset;
+            Vector3 TR = goRight + goUp - nearClipOffset;
+            Vector3 BR = goRight - goUp - nearClipOffset;
+            Vector3 BL = -goRight - goUp - nearClipOffset;
 
             frustum.SetRow(0, TL);
             frustum.SetRow(1, BL);

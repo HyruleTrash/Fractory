@@ -85,7 +85,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
 
             _raymarchMaterial.SetMatrix("_CamFrustum", MathUtil.CamFrustum(cameraData.camera));
             _raymarchMaterial.SetMatrix("_CamToWorld", cameraData.camera.cameraToWorldMatrix);
-            _raymarchMaterial.SetVector("_CamForwardOrtho", cameraData.camera.transform.forward * cameraData.camera.farClipPlane);
+            _raymarchMaterial.SetVector("_CamForwardOrtho", cameraData.camera.transform.forward);
             _raymarchMaterial.SetVector("_CamWorldPos", cameraData.worldSpaceCameraPos);
             _raymarchMaterial.SetFloat("_Near", cameraData.camera.nearClipPlane);
             _raymarchMaterial.SetFloat("_Far", cameraData.camera.farClipPlane);
