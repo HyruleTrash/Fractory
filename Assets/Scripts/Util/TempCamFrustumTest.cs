@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TempCamFrustumTest : MonoBehaviour {
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmosSelected() {
         Camera cam = GetComponent<Camera>();
 
         Matrix4x4 frustum = MathUtil.CamFrustum(cam);

@@ -82,26 +82,24 @@ Shader "FracturedRealm/RaymarchingShader"
             _ObjectsBuffer.GetDimensions(objectCount, memSize);
             for (uint i = 0; i < objectCount; i++)
             {
-                int index = i;
-                float3 p = mul(pos - _ObjectsBuffer[index].position.xyz,  _ObjectsBuffer[index].rotation);
-                if ( _ObjectsBuffer[index].type == 0)
+                float foundDist = 0;
+                float3 p = mul(pos - _ObjectsBuffer[i].position.xyz,  _ObjectsBuffer[i].rotation);
+                if ( _ObjectsBuffer[i].type == 0)
                 {
-                    dist += sdCube(p,  _ObjectsBuffer[index].scale.x / 2);
+                    foundDist = sdCube(p,  _ObjectsBuffer[i].scale.x / 2);
                 }
-                else if ( _ObjectsBuffer[index].type == 1)
+                else if ( _ObjectsBuffer[i].type == 1)
                 {
-                    dist += sdMengerSponge(p, average( _ObjectsBuffer[index].scale.xyz), 2);
+                    foundDist = sdMengerSponge(p, average( _ObjectsBuffer[i].scale.xyz), 2);
                 }
+                
                 if (i == 0)
                 {
-                    return dist; // heya future me, for now added this to only render the first object
-                    /*
-                        for some odd reason the first object dissapears when adding more objects
-                        Figure out why this is happening and fix it
-                        Most likely has to do with the fact that we're adding the distances together in this way
-                        To fix it we need to add the distances together in a different way
-                        That being: the minimum distance probably
-                    */
+                    dist = foundDist;
+                }
+                else
+                {
+                    dist = min(dist, foundDist);
                 }
             }
             if (objectCount == 0)

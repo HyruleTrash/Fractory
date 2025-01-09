@@ -119,8 +119,6 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
             raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
 
-            raymarchMaterial.SetInt("_ObjectCount", fractals.Length);
-
             if (fractalBuffer == null){
                 fractalBuffer = new ComputeBuffer(fractals.Length, _fractalBufferSize, ComputeBufferType.Structured);
                 fractalBuffer.name = "Fractal Buffer";
@@ -130,14 +128,6 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             }
             raymarchMaterial.SetBuffer("_ObjectsBuffer", fractalBuffer);
             fractalBuffer.SetData(fractals);
-
-            Fractal[] temp = new Fractal[fractals.Length];
-            fractalBuffer.GetData(temp);
-            string tempTwo = "";
-            for (int i = 0; i < temp.Length; i++){
-                tempTwo += JsonUtility.ToJson(temp[i]) + "\n";
-            }
-            Debug.Log(tempTwo);
 
             RenderGraphUtils.BlitMaterialParameters prePass = new(source, destination, raymarchMaterial, 0);
             prePass.geometry = RenderGraphUtils.FullScreenGeometryType.ProceduralQuad;
