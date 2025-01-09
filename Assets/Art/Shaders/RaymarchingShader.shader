@@ -7,7 +7,7 @@ Shader "FracturedRealm/RaymarchingShader"
         // the input structure (Attributes), and the output structure (Varyings)
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
-        #include "Assets\Art\Shaders\RaymarchUtil.hlsl"
+        #include "Assets\Art\Shaders\Util\RaymarchUtil.hlsl"
 
         sampler2D _CameraDepthTexture;
         float _Near;
@@ -86,11 +86,19 @@ Shader "FracturedRealm/RaymarchingShader"
                 float3 p = mul(pos - _ObjectsBuffer[i].position.xyz,  _ObjectsBuffer[i].rotation);
                 if ( _ObjectsBuffer[i].type == 0)
                 {
-                    foundDist = sdCube(p,  _ObjectsBuffer[i].scale.x / 2);
+                    foundDist = sdRoundCube(p,  _ObjectsBuffer[i].scale.x / 2, 0);
                 }
                 else if ( _ObjectsBuffer[i].type == 1)
                 {
-                    foundDist = sdMengerSponge(p, average( _ObjectsBuffer[i].scale.xyz), 2);
+                    foundDist = sdSphere(p, _ObjectsBuffer[i].scale.x / 2);
+                }
+                else if ( _ObjectsBuffer[i].type == 2)
+                {
+                    foundDist = sdPyramid(p, average(_ObjectsBuffer[i].scale.xz), _ObjectsBuffer[i].scale.y);
+                }
+                else if ( _ObjectsBuffer[i].type == 3)
+                {
+                    foundDist = sdOctahedron(p, _ObjectsBuffer[i].scale.x / 2);
                 }
                 
                 if (i == 0)

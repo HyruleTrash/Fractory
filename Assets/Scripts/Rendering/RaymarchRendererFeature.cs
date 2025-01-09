@@ -124,7 +124,9 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
                 fractalBuffer.name = "Fractal Buffer";
             }
             if (fractals.Length != fractalBuffer.count){
-                fractalBuffer.SetCounterValue((uint)fractals.Length);
+                fractalBuffer.Release();
+                fractalBuffer = new ComputeBuffer(fractals.Length, _fractalBufferSize, ComputeBufferType.Structured);
+                fractalBuffer.name = "Fractal Buffer";
             }
             raymarchMaterial.SetBuffer("_ObjectsBuffer", fractalBuffer);
             fractalBuffer.SetData(fractals);

@@ -4,5 +4,7 @@ using UnityEngine;
 public enum FractalType
 {
     Cube,
-    MengerSponge
+    Sphere,
+    Pyramid,
+    Octahedron
 }
