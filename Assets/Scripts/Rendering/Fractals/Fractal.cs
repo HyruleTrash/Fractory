@@ -7,4 +7,5 @@ public struct Fractal {
     public Matrix4x4 rotation;
     public Vector4 scale;
     public float type;
+    public float bevel;
 }

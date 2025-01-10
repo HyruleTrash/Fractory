@@ -3,25 +3,12 @@ float sdSphere(float3 pos, float radius)
     return length(pos) - radius;
 }
 
-float sdCube(float3 rayPos, float size) {
-    float3 b = float3(size, size, size);
-    float3 q = abs(rayPos) - b;
-    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+float sdCube(float3 rayPos, float3 b, float bevel = 0) {
+    float3 q = abs(rayPos) - b + bevel;
+    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) - bevel;
 }
 
-float sdCube(float3 rayPos, float3 b) {
-    float3 q = abs(rayPos) - b;
-    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
-}
-
-float sdRoundCube(float3 p, float size, float r )
-{
-    float3 b = float3(size, size, size);
-    float3 q = abs(p) - b + r;
-    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) - r;
-}
-
-float sdPyramid(float3 p, float size, float h )
+float sdPyramid(float3 p, float size, float h, float bevel = 0)
 {
     p += float3(0,0.5*h,0);
     float m2 = h*h + 0.25;
@@ -44,10 +31,10 @@ float sdPyramid(float3 p, float size, float h )
 
     float bottom = sdCube(p + float3(size / 4, 0, size / 4), float3(size / 4, 0.001, size / 4));
         
-    return min(sides, bottom);
+    return min(sides, bottom) - bevel;
 }
 
-float sdOctahedron( float3 p, float s )
+float sdOctahedron( float3 p, float s, float bevel = 0)
 {
     p = abs(p);
     float m = p.x+p.y+p.z-s;
@@ -66,8 +53,9 @@ float sdOctahedron( float3 p, float s )
         return m * 0.57735027;
     }
         
-    float k = clamp(0.5*(q.z-q.y+s),0.0,s); 
-    return length(float3(q.x,q.y-s+k,q.z-k)); 
+    float k = clamp(0.5*(q.z-q.y+s),0.0,s);
+    float r = length(float3(q.x,q.y-s+k,q.z-k));
+    return r - bevel; 
 }
 
 float sdCross(float3 rayPos, float size) {

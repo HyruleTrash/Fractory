@@ -23,6 +23,7 @@ Shader "FracturedRealm/RaymarchingShader"
             float4x4 rotation;
             float4 scale;
             float type;
+            float bevel;
         };
         
         StructuredBuffer<Object> _ObjectsBuffer;
@@ -86,7 +87,7 @@ Shader "FracturedRealm/RaymarchingShader"
                 float3 p = mul(pos - _ObjectsBuffer[i].position.xyz,  _ObjectsBuffer[i].rotation);
                 if ( _ObjectsBuffer[i].type == 0)
                 {
-                    foundDist = sdRoundCube(p,  _ObjectsBuffer[i].scale.x / 2, 0);
+                    foundDist = sdCube(p,  _ObjectsBuffer[i].scale.x / 2, _ObjectsBuffer[i].bevel);
                 }
                 else if ( _ObjectsBuffer[i].type == 1)
                 {
@@ -94,11 +95,11 @@ Shader "FracturedRealm/RaymarchingShader"
                 }
                 else if ( _ObjectsBuffer[i].type == 2)
                 {
-                    foundDist = sdPyramid(p, average(_ObjectsBuffer[i].scale.xz), _ObjectsBuffer[i].scale.y);
+                    foundDist = sdPyramid(p, average(_ObjectsBuffer[i].scale.xz), _ObjectsBuffer[i].scale.y, _ObjectsBuffer[i].bevel);
                 }
                 else if ( _ObjectsBuffer[i].type == 3)
                 {
-                    foundDist = sdOctahedron(p, _ObjectsBuffer[i].scale.x / 2);
+                    foundDist = sdOctahedron(p, _ObjectsBuffer[i].scale.x / 2, _ObjectsBuffer[i].bevel);
                 }
                 
                 if (i == 0)
