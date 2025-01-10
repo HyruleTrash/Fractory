@@ -11,13 +11,15 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
     public Shader shader;
     private RaymarchPass _raymarchPass;
     public float maxDistance = 100.0f;
+    [Range(0.0f, 2.0f)]
+    public float lightOffset = 1.0f;
 
     public override void Create()
     {
         if (shader == null)
             return;
 
-        _raymarchPass = new RaymarchPass(shader, maxDistance);
+        _raymarchPass = new RaymarchPass(shader, maxDistance, lightOffset);
 
         _raymarchPass.renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
     }
@@ -47,6 +49,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
     public class RaymarchPass : ScriptableRenderPass{
         public float maxDistance;
         public Transform light;
+        public float lightOffset = 1.0f;
         public Fractal[] fractals;
         private Shader _shader;
         public ComputeBuffer fractalBuffer;
@@ -56,12 +59,13 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
         private RenderTextureDescriptor _textureDescriptor;
         private FractalManager _fractalManager;
 
-        public RaymarchPass(Shader shader, float maxDistance)
+        public RaymarchPass(Shader shader, float maxDistance, float lightOffset)
         {
             this._shader = shader;
             raymarchMaterial = new Material(shader);
             _textureDescriptor = new RenderTextureDescriptor(Screen.width, Screen.height, RenderTextureFormat.Default, 0);
             this.maxDistance = maxDistance;
+            this.lightOffset = lightOffset;
             _fractalBufferSize = Marshal.SizeOf(typeof(Fractal));
         }
 
@@ -118,6 +122,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             raymarchMaterial.SetFloat("_Far", cameraData.camera.farClipPlane);
             raymarchMaterial.SetFloat("_MaxDistance", maxDistance);
             raymarchMaterial.SetVector("_LightDir", light ? light.forward : Vector3.down);
+            raymarchMaterial.SetFloat("_LightOffset", lightOffset);
 
             if (fractalBuffer == null){
                 fractalBuffer = new ComputeBuffer(fractals.Length, _fractalBufferSize, ComputeBufferType.Structured);

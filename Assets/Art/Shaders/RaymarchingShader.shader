@@ -17,13 +17,16 @@ Shader "FracturedRealm/RaymarchingShader"
         float4x4 _CamFrustum, _CamToWorld;
         float _MaxDistance;
         float3 _LightDir;
+        float _LightOffset;
 
         struct Object{
             float4 position;
             float4x4 rotation;
             float4 scale;
+            float3 color;
             float type;
             float bevel;
+            int complexity;
         };
         
         StructuredBuffer<Object> _ObjectsBuffer;
@@ -74,10 +77,11 @@ Shader "FracturedRealm/RaymarchingShader"
             return output;
         }
      
-        float DistanceField(float3 pos)
+        float4 DistanceField(float3 pos)
         {
             // loop trough all objects
             float dist = 0;
+            float3 color;
             uint objectCount;
             uint memSize;
             _ObjectsBuffer.GetDimensions(objectCount, memSize);
@@ -87,7 +91,15 @@ Shader "FracturedRealm/RaymarchingShader"
                 float3 p = mul(pos - _ObjectsBuffer[i].position.xyz,  _ObjectsBuffer[i].rotation);
                 if ( _ObjectsBuffer[i].type == 0)
                 {
-                    foundDist = sdCube(p,  _ObjectsBuffer[i].scale.x / 2, _ObjectsBuffer[i].bevel);
+                    if (_ObjectsBuffer[i].complexity == 0)
+                    {
+                        foundDist = sdCube(p,  _ObjectsBuffer[i].scale.x / 2, _ObjectsBuffer[i].bevel);
+                    }
+                    else
+                    {
+                        float usedScale = average(_ObjectsBuffer[i].scale.xzy);
+                        foundDist = sdMengerSponge(p,  float3(1,1,1)*usedScale, _ObjectsBuffer[i].complexity);
+                    }
                 }
                 else if ( _ObjectsBuffer[i].type == 1)
                 {
@@ -105,26 +117,35 @@ Shader "FracturedRealm/RaymarchingShader"
                 if (i == 0)
                 {
                     dist = foundDist;
+                    color = _ObjectsBuffer[i].color;
                 }
                 else
                 {
                     dist = min(dist, foundDist);
+                    if (dist == foundDist)
+                    {
+                        color = _ObjectsBuffer[i].color;
+                    }
                 }
             }
             if (objectCount == 0)
             {
                 return _MaxDistance;
             }
-            return dist;
+            return float4(color, dist);
+        }
+
+        float DistanceFieldOnlyDist(float3 pos){
+            return DistanceField(pos).w;
         }
 
         float3 GetNormal(float3 pos)
         {
             const float2 offset = float2(0.001, 0.0);
             float3 normal = float3(
-                DistanceField(pos + offset.xyy) - DistanceField(pos - offset.xyy),
-                DistanceField(pos + offset.yxy) - DistanceField(pos - offset.yxy),
-                DistanceField(pos + offset.yyx) - DistanceField(pos - offset.yyx)
+                DistanceFieldOnlyDist(pos + offset.xyy) - DistanceFieldOnlyDist(pos - offset.xyy),
+                DistanceFieldOnlyDist(pos + offset.yxy) - DistanceFieldOnlyDist(pos - offset.yxy),
+                DistanceFieldOnlyDist(pos + offset.yyx) - DistanceFieldOnlyDist(pos - offset.yyx)
             );
             return normalize(normal);
         }
@@ -144,12 +165,14 @@ Shader "FracturedRealm/RaymarchingShader"
                 }
                 float3 pos = rayOrigin + rayDir * distanceTraveled;
                 // check for hit
-                float distance = DistanceField(pos);
+                float4 data = DistanceField(pos);
+                float distance = data.w;
                 if (distance < 0.0001)
                 {
                     float3 normal = GetNormal(pos);
                     float light = dot(-_LightDir, normal);
-                    result = float4(float3(1,1,1) * light, 1);
+                    light = max(max(0, light) + _LightOffset, 0);
+                    result = float4(data.rgb * light, 1);
                     break;
                 }
 
@@ -162,7 +185,6 @@ Shader "FracturedRealm/RaymarchingShader"
         float4 Frag (C_Varyings input) : SV_Target
         {
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
             
             Varyings inputAlt;
             inputAlt.texcoord = input.texcoord;
@@ -185,16 +207,6 @@ Shader "FracturedRealm/RaymarchingShader"
                 rayOrigin = input.ray.xyz + _CamWorldPos.xyz;
                 depth = CorrectDepth(tex2D(_CameraDepthTexture, input.texcoord).r, _Near, _Far);
             }
-
-            // temp code delete later
-            // uint objectCount;
-            // uint memSize;
-            // _ObjectsBuffer.GetDimensions(objectCount, memSize);
-            // for (uint i = 0; i < objectCount; i++){
-            //     if (i > 0){
-            //         return float4(float3(0.1,0.1,0.1) * length(_ObjectsBuffer[1].position.xyz), 1);
-            //     }
-            // }
 
             float4 color = RayMarching(rayOrigin, rayDir, depth);
             return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);

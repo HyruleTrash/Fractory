@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 
 [ExecuteAlways]
@@ -7,7 +8,7 @@ public class FractalManager : GlobalMonoBehaviour {
     public List<FractalRenderer> fractalRenderers = new List<FractalRenderer>();
 
     private void Awake() {
-        fractalRenderers = new List<FractalRenderer>(GetComponentsInChildren<FractalRenderer>());
+        fractalRenderers = new List<FractalRenderer>(transform.root.GetComponentsInChildren<FractalRenderer>());
     }
 
     public Fractal[] GetFractals() {
@@ -19,8 +20,10 @@ public class FractalManager : GlobalMonoBehaviour {
             fractal.position = renderer.transform.position;
             fractal.rotation = Matrix4x4.TRS(Vector3.zero, renderer.transform.rotation, Vector3.one);
             fractal.scale = renderer.transform.localScale;
+            fractal.color = new Vector3(renderer.color.r, renderer.color.g, renderer.color.b);
             fractal.type = (float)renderer.type;
             fractal.bevel = renderer.bevel;
+            fractal.complexity = renderer.complexity;
             fractals[i] = fractal;
         }
 

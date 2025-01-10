@@ -95,5 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  color: {r: 0.65882355, g: 0.5411765, b: 0.69803923, a: 1}
   bevel: 0
+  complexity: 0
   manager: {fileID: 0}
