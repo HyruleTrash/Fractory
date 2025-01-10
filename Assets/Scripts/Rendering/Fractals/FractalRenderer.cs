@@ -3,7 +3,6 @@ using UnityEngine;
 [ExecuteAlways]
 public class FractalRenderer : MonoBehaviour {
     public FractalType type;
-    [Range(0, 0.15f)]
     public float bevel;
     [HideInInspector]
     public FractalManager manager;

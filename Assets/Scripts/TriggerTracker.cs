@@ -22,4 +22,8 @@ public class TriggerTracker : MonoBehaviour
         colliders.Remove(other);
     }
     
+    public bool IsTriggered()
+    {
+        return colliders.Count > 0;
+    }
 }

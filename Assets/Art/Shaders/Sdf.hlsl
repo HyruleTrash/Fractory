@@ -8,12 +8,14 @@ float sdCube(float3 rayPos, float3 b, float bevel = 0) {
     return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) - bevel;
 }
 
-float sdPyramid(float3 p, float size, float h, float bevel = 0)
+float sdPyramid(float3 p, float size, float height, float bevel = 0)
 {
+    float h = height - bevel;
+    float usedSize = 1 / size + bevel;
+
     p += float3(0,0.5*h,0);
     float m2 = h*h + 0.25;
     
-    float usedSize = 1 / size;
     p.xz = abs(p.xz) * usedSize;
     p.xz = (p.z>p.x) ? p.zx : p.xz;
     p.xz -= 0.5;
