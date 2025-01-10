@@ -9,59 +9,42 @@ float sdCube(float3 rayPos, float size) {
     return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
 }
 
-float sdRoundCube( float3 p, float size, float r )
+float sdCube(float3 rayPos, float3 b) {
+    float3 q = abs(rayPos) - b;
+    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+}
+
+float sdRoundCube(float3 p, float size, float r )
 {
     float3 b = float3(size, size, size);
     float3 q = abs(p) - b + r;
     return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) - r;
 }
 
-// float sdPyramid( float3 p, float size, float h )
-// {
-//     float m2 = h*h + 0.25;
+float sdPyramid(float3 p, float size, float h )
+{
+    p += float3(0,0.5*h,0);
+    float m2 = h*h + 0.25;
     
-//     float usedSize = 1 / size;
-//     p.xz = abs(p.xz) * usedSize;
-//     p.xz = (p.z>p.x) ? p.zx : p.xz;
-//     p.xz -= 0.5;
+    float usedSize = 1 / size;
+    p.xz = abs(p.xz) * usedSize;
+    p.xz = (p.z>p.x) ? p.zx : p.xz;
+    p.xz -= 0.5;
 
-//     float3 q = float3( p.z, h*p.y - 0.5*p.x, h*p.x + 0.5*p.y);
+    float3 q = float3( p.z, h*p.y - 0.5*p.x, h*p.x + 0.5*p.y);
     
-//     float s = max(-q.x,0.0);
-//     float t = clamp( (q.y-0.5*p.z)/(m2+0.25), 0.0, 1.0 );
+    float s = max(-q.x,0.0);
+    float t = clamp( (q.y-0.5*p.z)/(m2+0.25), 0.0, 1.0 );
         
-//     float a = m2*(q.x+s)*(q.x+s) + q.y*q.y;
-//     float b = m2*(q.x+0.5*t)*(q.x+0.5*t) + (q.y-m2*t)*(q.y-m2*t);
+    float a = m2*(q.x+s)*(q.x+s) + q.y*q.y;
+    float b = m2*(q.x+0.5*t)*(q.x+0.5*t) + (q.y-m2*t)*(q.y-m2*t);
         
-//     float d2 = min(q.y,-q.x*m2-q.y*0.5) > 0.0 ? 0.0 : min(a,b);
+    float d2 = min(q.y,-q.x*m2-q.y*0.5) > 0.0 ? 0.0 : min(a,b);
+    float sides = sqrt( (d2+q.z*q.z)/m2 ) * sign(max(q.z,-p.y));
+
+    float bottom = sdCube(p + float3(size / 4, 0, size / 4), float3(size / 4, 0.001, size / 4));
         
-//     return sqrt( (d2+q.z*q.z)/m2 ) * sign(max(q.z,-p.y));
-// }
-
-float sdPyramid(float3 p, float s, float height) {
-    float size = (s / height) * 0.5;
-    float h = height * 0.5;
-    p.xz = abs(p.xz);
-    float3 d1 = float3(max(p.x - size, 0.0), p.y + h, max(p.z - size, 0.0));
-    float3 d2 = float3(max(p.x, 0.0), p.y - h, max(p.z, 0.0));
-
-    float3 e = float3(size, 2.0 * h, size);
-    float3 n1 = float3(0.0, e.zy);
-    float k1 = dot(n1, n1);
-    float h1 = dot(p - float3(size, -h, size), n1) / k1;
-    float3 n2 = float3(k1, e.y * e.x, -e.z * e.x);
-    float m1 = dot(p - float3(size, -h, size), n2) / dot(n2, n2);
-    float3 d3 = p - clamp(p - n1 * h1 - n2 * max(m1, 0.0), float3(0.0, -h, 0.0), float3(size, h, size));
-
-    float3 n3 = float3(e.yx, 0.0);
-    float k2 = dot(n3, n3);
-    float h2 = dot(p - float3(size, -h, size), n3) / k2;
-    float3 n4 = float3(-e.x * e.z, e.y * e.z, k2);
-    float m2 = dot(p - float3(size, -h, size), n4) / dot(n4, n4);    
-    float3 d4 = p - clamp(p - n3 * h2 - n4 * max(m2, 0.0), float3(0.0, -h, 0.0), float3(size, h, size));
-
-    float d = sqrt(min(min(min(dot(d1, d1), dot(d2, d2)), dot(d3, d3)), dot(d4, d4)));
-    return max(max(h1, h2), abs(p.y) - h) < 0.0 ? -d : d;
+    return min(sides, bottom);
 }
 
 float sdOctahedron( float3 p, float s )
