@@ -26,4 +26,18 @@ public class TriggerTracker : MonoBehaviour
     {
         return colliders.Count > 0;
     }
+
+    public T GetColliderWithClass<T>() where T : Component
+    {
+        foreach (Collider collider in colliders)
+        {
+            T component = collider.GetComponent<T>();
+            if (component != null)
+            {
+                return component;
+            }
+        }
+
+        return null;
+    }
 }

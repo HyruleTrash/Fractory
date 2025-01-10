@@ -25,7 +25,12 @@ public class FractalSpawner : MonoBehaviour {
         }
 
         GameObject fractal = Instantiate(fractalPrefab, spawnPoint.position, Quaternion.identity);
-        fractal.transform.SetParent(spawnPoint);
+        fractal.AddComponent<SpawnerTracker>().spawner = this;
+        fractal.AddComponent<SimpleDeath>();
         spawnedFractals.Add(fractal);
+    }
+
+    public void RemoveFractal(GameObject fractal) {
+        spawnedFractals.Remove(fractal);
     }
 }

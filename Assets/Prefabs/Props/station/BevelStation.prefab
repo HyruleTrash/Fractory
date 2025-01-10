@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &4301107946778366049
+--- !u!1001 &7112249225895233735
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -51,10 +51,10 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: c3cd202a71751bc4d922b903a95778a8, type: 2}
+      objectReference: {fileID: 2100000, guid: 83341df4b07ff5742842904e629a4ab3, type: 2}
     - target: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       propertyPath: m_Name
-      value: Button
+      value: BevelStation
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -62,29 +62,29 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6109908361390773144}
+      addedObject: {fileID: 1758745319780367002}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4753902714989951331}
+      addedObject: {fileID: 6435656295824126892}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8855172097689261290}
+      addedObject: {fileID: 3680618239643298987}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 731981790947470113}
+      addedObject: {fileID: 1331848499475160322}
   m_SourcePrefab: {fileID: 100100000, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
---- !u!1 &3995241741742026032 stripped
+--- !u!1 &7958600705953330582 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
-  m_PrefabInstance: {fileID: 4301107946778366049}
+  m_PrefabInstance: {fileID: 7112249225895233735}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &6109908361390773144
+--- !u!65 &1758745319780367002
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3995241741742026032}
+  m_GameObject: {fileID: 7958600705953330582}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -99,13 +99,13 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7, y: 1.7, z: 0.72}
   m_Center: {x: 0, y: 0, z: 0.4}
---- !u!64 &4753902714989951331
+--- !u!64 &6435656295824126892
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3995241741742026032}
+  m_GameObject: {fileID: 7958600705953330582}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -121,35 +121,33 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5447036705194824928, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
---- !u!114 &8855172097689261290
+--- !u!114 &3680618239643298987
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3995241741742026032}
+  m_GameObject: {fileID: 7958600705953330582}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5ec8fbcefe180a45922a9adab4a0c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trigger: {fileID: 0}
+  trigger: {fileID: 1758745319780367002}
   colliders: []
---- !u!114 &731981790947470113
+--- !u!114 &1331848499475160322
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3995241741742026032}
+  m_GameObject: {fileID: 7958600705953330582}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5649ea9e059487e4c8a2249a6f29794b, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fcf540bfae849b4389902542200e288, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   requiredTags:
-  - Player
   - PickUpItem
-  isPressed: 0
-  OnMaterial: {fileID: 2100000, guid: c3cd202a71751bc4d922b903a95778a8, type: 2}
-  OffMaterial: {fileID: 2100000, guid: 4fd597110af12ef4caf2fa082b10bea0, type: 2}
+  levelButton: {fileID: 0}
+  BevelAmount: 0.1
