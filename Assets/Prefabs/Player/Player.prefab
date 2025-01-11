@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 3288870279531176763}
   - component: {fileID: 7253418884674545465}
   - component: {fileID: 1358022272748884244}
+  - component: {fileID: 6504014009640659526}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -279,8 +280,21 @@ MonoBehaviour:
   PickUpMask: PickUpItem
   holdingPosition: {fileID: 3322607749051465282}
   boxCollider: {fileID: 1442677954166954264}
-  reachDistance: 2
   speed: 5
+--- !u!114 &6504014009640659526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7937686174037620618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5f101e568b5334d841c56532786a70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reachDistance: 2
+  boxCollider: {fileID: 1442677954166954264}
 --- !u!1 &8237991491906245569
 GameObject:
   m_ObjectHideFlags: 0

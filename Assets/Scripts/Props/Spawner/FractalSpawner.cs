@@ -4,6 +4,7 @@ using UnityEngine;
 public class FractalSpawner : MonoBehaviour {
     public GameObject fractalPrefab;
     public LevelButton levelButton;
+    public Conveyor conveyor;
     private List<GameObject> spawnedFractals = new List<GameObject>();
     public int maxSpawnAmount = 10;
     [SerializeField]
@@ -12,6 +13,9 @@ public class FractalSpawner : MonoBehaviour {
     private void Start() {
         if (levelButton != null) {
             levelButton.buttonPressed = ButtonPressed;
+        }
+        if (conveyor != null) {
+            conveyor.onConveyorFinished = SpawnFractal;
         }
     }
 

@@ -13,7 +13,6 @@ public class PlayerPickup : MonoBehaviour {
     public Transform holdingPosition;
     [Tooltip("The box collider that will be used to detect items")]
     public TriggerTracker boxCollider;
-    public float reachDistance = 2f;
     public float speed = 5f;
     private InventoryManager inventoryManager;
 

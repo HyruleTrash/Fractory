@@ -9,7 +9,6 @@ public class TriggerTracker : MonoBehaviour
 
     private void Start() {
         trigger = GetComponent<Collider>();
-        trigger.isTrigger = true;
     }
 
     private void OnTriggerEnter(Collider other)

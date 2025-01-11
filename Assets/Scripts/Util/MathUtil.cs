@@ -53,14 +53,29 @@ public static class MathUtil
         return (to - from).normalized;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="euler"></param>
+    /// <returns></returns>
     public static Vector3 NormalizeDegrees(Vector3 euler){
         return new Vector3(NormalizeDegree(euler.x), NormalizeDegree(euler.y), NormalizeDegree(euler.z));
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="degree"></param>
+    /// <returns></returns>
     public static float NormalizeDegree(float degree){
         return degree % 360;
     }
 
+    /// <summary>
+    /// Calculates the Frustum of a camera
+    /// </summary>
+    /// <param name="cam"></param>
+    /// <returns></returns>
     public static Matrix4x4 CamFrustum(Camera cam)
     {
         Matrix4x4 frustum = Matrix4x4.identity;
@@ -98,5 +113,19 @@ public static class MathUtil
         }
 
         return frustum;
+    }
+
+    /// <summary>
+    /// Converts a color to a Vector4
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
+    public static Vector4 ColorToVector4(Color color)
+    {
+        return new Vector4(color.r, color.g, color.b, color.a);
+    }
+
+    public static Vector3 GetXZY(Vector4 vector){
+        return new Vector3(vector.x, vector.z, vector.y);
     }
 }
