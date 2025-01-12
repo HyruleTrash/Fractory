@@ -100,15 +100,19 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
                 raymarchMaterial = new Material(_shader);
                 return;
             }
+
+            if (cameraData.camera.cameraType == CameraType.Preview || cameraData.camera.cameraType == CameraType.Reflection){
+                return;
+            }
+
+            int layer = LayerMask.NameToLayer("Raymarch");
+            if (!(( cameraData.camera.cullingMask & (1 << layer)) != 0)){
+                return;
+            }
             
             RenderGraphUtils.BlitMaterialParameters output = SetSettings(renderGraph, _destination, _source, cameraData);
 
             renderGraph.AddBlitPass(output, "RaymarchingPass");
-
-            // if (fractalBuffer != null){
-            //     fractalBuffer.Release();
-            //     fractalBuffer = null;
-            // }
         }
 
         private RenderGraphUtils.BlitMaterialParameters SetSettings(RenderGraph renderGraph, TextureHandle destination, TextureHandle source, UniversalCameraData cameraData){

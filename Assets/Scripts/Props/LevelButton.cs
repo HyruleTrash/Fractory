@@ -64,7 +64,7 @@ public class LevelButton : MonoBehaviour {
 
     private ButtonData HasCorrectTags(){
         foreach (Collider collider in triggerTracker.colliders) {
-            if (requiredTags.Contains(collider.tag)) {
+            if (requiredTags.Contains(collider.tag) && collider.GetComponent<LerpTo>() == null) {
                 return new ButtonData { tag = collider.tag, isPressed = true };
             }
         }

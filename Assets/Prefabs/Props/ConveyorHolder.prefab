@@ -128,7 +128,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 441778315249065529}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 1534101606866798528, guid: 327f5f9a19c6f62408da711d5c086c84, type: 3}
 --- !u!23 &7402987460259233765
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -136,7 +136,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 441778315249065529}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -151,7 +151,9 @@ MeshRenderer:
   m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials: []
+  m_Materials:
+  - {fileID: 2100000, guid: 71c1d3b9142f5de42ac54e2bd75d01b3, type: 2}
+  - {fileID: 2100000, guid: 3adf255c1e3538441b8b381e2cc238f2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -832,7 +834,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerTracker: {fileID: 1031996076984534946}
-  speed: 1
+  speed: 0.5
   direction: {x: 0, y: 0, z: 1}
   startPosition: {x: 0, y: 1.5, z: 0}
   distance: 2
@@ -959,7 +961,10 @@ PrefabInstance:
     - {fileID: 874411306962998540, guid: e74ef185e4f86d64791767e5664ee1d8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2967840301831126143, guid: e74ef185e4f86d64791767e5664ee1d8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 269335832352431306}
   m_SourcePrefab: {fileID: 100100000, guid: e74ef185e4f86d64791767e5664ee1d8, type: 3}
 --- !u!114 &1821400042837905675 stripped
 MonoBehaviour:
@@ -982,3 +987,16 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2967840301831126143, guid: e74ef185e4f86d64791767e5664ee1d8, type: 3}
   m_PrefabInstance: {fileID: 5905163798578018980}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &269335832352431306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8709038328575837915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9a35417af1abbb42a5558270809196c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 30
