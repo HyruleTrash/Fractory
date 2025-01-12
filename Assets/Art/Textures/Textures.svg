@@ -24,12 +24,12 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      inkscape:zoom="2.8145191"
-     inkscape:cx="197.54707"
-     inkscape:cy="89.002771"
-     inkscape:window-width="2256"
-     inkscape:window-height="1398"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
+     inkscape:cx="187.42101"
+     inkscape:cy="82.962663"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -121,6 +121,14 @@
          style="fill:none;stroke:#ffe4e8;stroke-width:0.881;stroke-opacity:1"
          d="m 50,2.5 v 0 l 7.5,15 h -15 z"
          sodipodi:nodetypes="ccccc" />
+    </g>
+    <g
+       id="g3-3-8"
+       transform="translate(40,20)">
+      <path
+         id="rect2-2-4"
+         style="fill:#271922;stroke:#e4fcff;stroke-width:0.626;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"
+         d="M 50.000191 1.8958211 C 47.817525 1.8958211 46.06038 3.7519869 46.06038 6.0573242 C 46.06038 7.7009284 46.953901 9.1154922 48.257662 9.7924967 L 45.767375 17.683488 L 54.232491 17.683488 L 51.742204 9.7924967 C 53.046144 9.1155594 53.940002 7.7010666 53.940002 6.0573242 C 53.940002 3.7519869 52.182858 1.8958211 50.000191 1.8958211 z " />
     </g>
     <g
        id="g3-3-1">
