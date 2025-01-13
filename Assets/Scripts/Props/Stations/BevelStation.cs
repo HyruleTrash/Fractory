@@ -4,7 +4,7 @@ public class BevelStation : FractalStation {
     public float BevelAmount;
 
     override public void StationTriggered(string tag, TriggerTracker triggerTracker) {
-        if (tag == "Player") {
+        if (tag == "Player" || tag == null) {
             FractalRenderer renderer = triggerTracker.GetColliderWithClass<FractalRenderer>();
             if (renderer != null) {
                 float increment = BevelAmount;
@@ -16,9 +16,9 @@ public class BevelStation : FractalStation {
                 }
 
                 // Special interactions may go here
-                if (renderer.type == FractalType.Cube && renderer.bevel == bevelLimit) {
-                    renderer.type = FractalType.Sphere;
-                }
+                // if (renderer.type == FractalType.Cube && renderer.bevel == bevelLimit) {
+                //     renderer.type = FractalType.Sphere;
+                // }
                 StationFinished();
             }
         }

@@ -9,11 +9,13 @@ public class ConveyorDisplay : Display {
 
     protected override void AfterInteract()
     {
-        extraUI.SetActive(true);
+        if (extraUI)
+            extraUI.SetActive(true);
     }
 
     protected override void AfterTurnOff()
     {
-        extraUI.SetActive(false);
+        if (extraUI)
+            extraUI.SetActive(false);
     }
 }

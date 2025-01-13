@@ -148,7 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 0, z: 0}
   origin: {x: -20, y: 9, z: 129.5}
-  running: 1
+  running: 0
   resetOrigin: 0
 --- !u!114 &5741957382456487627
 MonoBehaviour:
