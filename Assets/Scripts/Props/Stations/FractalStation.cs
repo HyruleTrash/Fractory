@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FractalStation : MonoBehaviour {
@@ -33,10 +34,15 @@ public class FractalStation : MonoBehaviour {
             renderer.GetComponent<Rigidbody>().isKinematic = true;
             if (displayButton != null && displayButton.fractal == null) {
                 displayButton.SetFractal(renderer);
+                renderer.AddComponent<RotateAroundAxis>();
             }
         }else{
             if (displayButton != null && displayButton.fractal != null) {
                 displayButton.RemoveFractal();
+                RotateAroundAxis rotateComponent = renderer.GetComponent<RotateAroundAxis>();
+                if (rotateComponent != null) {
+                    Destroy(rotateComponent);
+                }
             }
         }
     }

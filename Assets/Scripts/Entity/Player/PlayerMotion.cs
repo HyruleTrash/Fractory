@@ -3,11 +3,12 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(StateManager))]
-public class Playermotion : MonoBehaviour
+public class PlayerMotion : MonoBehaviour
 {
     public float horizontalSpeed = 5f;
     public float gravity = 9.81f;
     public float groundCheckOffset = 0.1f;
+    public LayerMask groundLayers;
     private CharacterController controller;
     private StateManager stateManager;
     public enum PlayerMovementState
@@ -49,7 +50,8 @@ public class Playermotion : MonoBehaviour
 
         motion *= horizontalSpeed; // Apply current motion speed
 
-        controller.Move(motion * Time.fixedDeltaTime); // Move the player or apply friction
+        if (controller.enabled)
+            controller.Move(motion * Time.fixedDeltaTime); // Move the player or apply friction
     }
 
     /// <summary>
@@ -75,7 +77,8 @@ public class Playermotion : MonoBehaviour
             motion = Vector3.down * gravity; // Apply gravity
         }
 
-        controller.Move(motion * Time.fixedDeltaTime); // Move the player
+        if (controller.enabled)
+            controller.Move(motion * Time.fixedDeltaTime); // Move the player
     }
 
     public bool IsGrounded()
@@ -88,7 +91,19 @@ public class Playermotion : MonoBehaviour
         return Physics.Raycast(
             transform.position + controller.height / 2 * Vector3.down,
             Vector3.down,
-            groundCheckOffset
+            groundCheckOffset,
+            groundLayers,
+            QueryTriggerInteraction.Ignore
         );
+    }
+
+    public void EnableController() => controller.enabled = true;
+
+    public void ResetMotion(Vector3 newPosition)
+    {
+        controller.Move(controller.velocity * -1);
+        controller.enabled = false;
+        transform.position = newPosition;
+        Invoke("EnableController", 0.1f);
     }
 }
