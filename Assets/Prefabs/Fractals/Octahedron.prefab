@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 339308363241276429}
   - component: {fileID: 2985232962199751030}
   - component: {fileID: 4778187258649450442}
+  - component: {fileID: -3952488141116706376}
+  - component: {fileID: 3102301525435743315}
   m_Layer: 0
   m_Name: Octahedron
   m_TagString: PickUpItem
@@ -99,3 +101,27 @@ MonoBehaviour:
   bevel: 0
   complexity: 0
   manager: {fileID: 0}
+--- !u!114 &-3952488141116706376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206843581682570371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 370257bce8f24e94bb9c09b3a266bbb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3102301525435743315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206843581682570371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3758a431d2fe1bf489d8d67701632e07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

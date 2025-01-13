@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Conveyor : MonoBehaviour {
-    public delegate void OnConveyorFinished();
+    public delegate void OnConveyorFinished(GameObject conveyor);
     public List<OnConveyorFinished> onConveyorFinishedListeners = new List<OnConveyorFinished>();
 
     public TriggerTracker triggerTracker;
@@ -19,6 +19,7 @@ public class Conveyor : MonoBehaviour {
     public bool isRunning = false;
     [HideInInspector]
     public bool isFinished = false;
+    public bool destroyFractalCompletelyOnFinish = false;
     private GameObject foundFractal;
 
     private void Update() {
@@ -68,10 +69,15 @@ public class Conveyor : MonoBehaviour {
     }
 
     public void Finish(){
-        Destroy(foundFractal);
+        if (destroyFractalCompletelyOnFinish)
+        {
+            foundFractal.GetComponent<FractalDeath>().DeathKeepInSpawnLimit();
+        }else{
+            Destroy(foundFractal);
+        }
         foreach (OnConveyorFinished listener in onConveyorFinishedListeners)
         {
-            listener?.Invoke();
+            listener?.Invoke(gameObject);
         }
     }
 

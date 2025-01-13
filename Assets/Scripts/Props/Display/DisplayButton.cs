@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DisplayButton : Display {
     [SerializeField]
-    public delegate void ButtonPressed();
+    public delegate void ButtonPressed(GameObject button);
     public List<ButtonPressed> buttonPressedListeners = new List<ButtonPressed>();
     public UIButtonOnDisplay userInterface;
     public Vector3 holdOffset = new Vector3(0, 0, 3);
@@ -31,7 +31,7 @@ public class DisplayButton : Display {
     public void Activate(){
         foreach (ButtonPressed listener in buttonPressedListeners)
         {
-            listener?.Invoke();
+            listener?.Invoke(gameObject);
         }
     }
 }

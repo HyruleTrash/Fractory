@@ -60,6 +60,11 @@ public class PlayerPickup : MonoBehaviour {
                 // Get the item component from the hit object
                 PlayerInventoryItem item = new PlayerInventoryItem(collider.gameObject.name, collider.gameObject);
 
+                if (collider.GetComponent<InteractPopUpRegistry>() != null)
+                {
+                    Destroy(collider.GetComponent<InteractPopUpRegistry>());
+                }
+
                 // Add the item to the inventory
                 if (inventoryManager.AddItem(item))
                 {

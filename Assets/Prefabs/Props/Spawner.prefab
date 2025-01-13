@@ -141,8 +141,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fractalPrefab: {fileID: 2967840301831126143, guid: e74ef185e4f86d64791767e5664ee1d8, type: 3}
+  levelButton: {fileID: 0}
+  conveyor: {fileID: 0}
   maxSpawnAmount: 10
   spawnPoint: {fileID: 5934749613408654869}
+  autoSpawn: 0
+  autoSpawnInterval: 2
+  giveInteractPopUp: 0
+  interactPopUpPrefab: {fileID: 0}
+  interactPopUpOffset: {x: 0, y: 2.5, z: 0}
 --- !u!4 &4404073654663961789 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}

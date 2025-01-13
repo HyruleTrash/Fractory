@@ -449,7 +449,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -100
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -657,9 +657,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerTracker: {fileID: 3339414677623099076}
   displayCamera: {fileID: 7179612808404972357}
+  fractal: {fileID: 8709038328575837915}
   screen: {fileID: 7402987460259233765}
   requiredFractal: {fileID: 1821400042837905675}
-  fractal: {fileID: 8709038328575837915}
 --- !u!114 &3339414677623099076
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class LevelButton : MonoBehaviour {
     [SerializeField]
-    public delegate void ButtonPressed(string tag);
+    public delegate void ButtonPressed(string tag, GameObject button);
     [SerializeField]
-    public delegate void UnButtonPressed(string tag);
+    public delegate void UnButtonPressed(string tag, GameObject button);
 
     private class ButtonData {
         public string tag;
@@ -54,14 +54,14 @@ public class LevelButton : MonoBehaviour {
             GetComponent<MeshRenderer>().SetMaterials(materials);
             isPressed = true;
             foreach (ButtonPressed listener in buttonPressedListeners) {
-                listener?.Invoke(data.tag);
+                listener?.Invoke(data.tag, gameObject);
             }
         } else if (isPressed == true && !isTriggered && !data.isPressed) {
             materials[1] = OffMaterial;
             GetComponent<MeshRenderer>().SetMaterials(materials);
             isPressed = false;
             foreach (UnButtonPressed listener in unButtonPressedListeners) {
-                listener?.Invoke(data.tag);
+                listener?.Invoke(data.tag, gameObject);
             }
         }
     }

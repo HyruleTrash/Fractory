@@ -53,11 +53,11 @@ public class FractalStation : MonoBehaviour {
         }
     }
 
-    private void ButtonPressed(string tag) {
+    private void ButtonPressed(string tag, GameObject button) {
         StationTriggered(tag, triggerTracker);
     }
 
-    private void Activate(){
+    private void Activate(GameObject trigger){
         StationTriggered(null, triggerTracker);
     }
 
