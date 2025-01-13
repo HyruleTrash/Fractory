@@ -66,6 +66,7 @@ public class PlayerPickup : MonoBehaviour {
                     LerpTo lerpTo = collider.AddComponent<LerpTo>();
                     lerpTo.speed = speed;
                     lerpTo.target = holdingPosition;
+                    collider.GetComponent<Rigidbody>().isKinematic = false;
 
                     // set exclusion layers picked up object
                     PlayerInventoryItem liveItem = GetCurrentItem();

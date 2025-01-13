@@ -17,8 +17,8 @@ public class LevelButton : MonoBehaviour {
     [Tooltip("The tags a collider requires to let the button become pressed.")]
     public string[] requiredTags;
     public bool isPressed = false;
-    public ButtonPressed buttonPressed;
-    public UnButtonPressed unButtonPressed;
+    public List<ButtonPressed> buttonPressedListeners = new List<ButtonPressed>();
+    public List<UnButtonPressed> unButtonPressedListeners = new List<UnButtonPressed>();
 
     [SerializeField]
     private Material OnMaterial;
@@ -53,12 +53,16 @@ public class LevelButton : MonoBehaviour {
             materials[1] = OnMaterial;
             GetComponent<MeshRenderer>().SetMaterials(materials);
             isPressed = true;
-            buttonPressed?.Invoke(data.tag);
+            foreach (ButtonPressed listener in buttonPressedListeners) {
+                listener?.Invoke(data.tag);
+            }
         } else if (isPressed == true && !isTriggered && !data.isPressed) {
             materials[1] = OffMaterial;
             GetComponent<MeshRenderer>().SetMaterials(materials);
             isPressed = false;
-            unButtonPressed?.Invoke(data.tag);
+            foreach (UnButtonPressed listener in unButtonPressedListeners) {
+                listener?.Invoke(data.tag);
+            }
         }
     }
 

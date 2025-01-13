@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Conveyor : MonoBehaviour {
     public delegate void OnConveyorFinished();
-    public OnConveyorFinished onConveyorFinished;
+    public List<OnConveyorFinished> onConveyorFinishedListeners = new List<OnConveyorFinished>();
 
     public TriggerTracker triggerTracker;
     [SerializeField]
@@ -68,7 +69,10 @@ public class Conveyor : MonoBehaviour {
 
     public void Finish(){
         Destroy(foundFractal);
-        onConveyorFinished?.Invoke();
+        foreach (OnConveyorFinished listener in onConveyorFinishedListeners)
+        {
+            listener?.Invoke();
+        }
     }
 
     private void OnDrawGizmosSelected() {

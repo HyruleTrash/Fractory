@@ -19,6 +19,7 @@ public class BevelStation : FractalStation {
                 if (renderer.type == FractalType.Cube && renderer.bevel == bevelLimit) {
                     renderer.type = FractalType.Sphere;
                 }
+                StationFinished();
             }
         }
     }

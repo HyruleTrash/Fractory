@@ -12,10 +12,10 @@ public class FractalSpawner : MonoBehaviour {
 
     private void Start() {
         if (levelButton != null) {
-            levelButton.buttonPressed = ButtonPressed;
+            levelButton.buttonPressedListeners.Add(ButtonPressed);
         }
         if (conveyor != null) {
-            conveyor.onConveyorFinished = SpawnFractal;
+            conveyor.onConveyorFinishedListeners.Add(SpawnFractal);
         }
     }
 
@@ -36,5 +36,14 @@ public class FractalSpawner : MonoBehaviour {
 
     public void RemoveFractal(GameObject fractal) {
         spawnedFractals.Remove(fractal);
+    }
+
+    private void OnDestroy() {
+        if (levelButton != null) {
+            levelButton.buttonPressedListeners.Remove(ButtonPressed);
+        }
+        if (conveyor != null) {
+            conveyor.onConveyorFinishedListeners.Remove(SpawnFractal);
+        }
     }
 }

@@ -7,11 +7,11 @@ public class Door : MonoBehaviour {
 
     private void Start() {
         if (levelButton != null) {
-            levelButton.buttonPressed = ButtonPressed;
-            levelButton.unButtonPressed = UnButtonPressed;
+            levelButton.buttonPressedListeners.Add(ButtonPressed);
+            levelButton.unButtonPressedListeners.Add(UnButtonPressed);
         }
         if (conveyor != null) {
-            conveyor.onConveyorFinished = Close;
+            conveyor.onConveyorFinishedListeners.Add(Open);
         }
     }
 
@@ -28,5 +28,15 @@ public class Door : MonoBehaviour {
 
     public void Close(){
         animator.SetTrigger("DoorClose");
+    }
+
+    private void OnDestroy() {
+        if (levelButton != null) {
+            levelButton.buttonPressedListeners.Remove(ButtonPressed);
+            levelButton.unButtonPressedListeners.Remove(UnButtonPressed);
+        }
+        if (conveyor != null) {
+            conveyor.onConveyorFinishedListeners.Remove(Open);
+        }
     }
 }

@@ -26,7 +26,7 @@ public class PlayerInteract : MonoBehaviour {
         {
             if (Vector3.Distance(transform.position, nearestInteractable.transform.position) > interactDistance)
             {
-                nearestInteractable.GetComponent<ConveyorDisplay>()?.TurnOff();
+                nearestInteractable.GetComponent<Display>()?.TurnOff();
 
                 nearestInteractable = null;
                 onInteract = null;
