@@ -406,7 +406,7 @@ Transform:
   m_GameObject: {fileID: 7793751131894006549}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.180943, y: 37.895306, z: -2.95}
+  m_LocalPosition: {x: 0, y: 80, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -660,6 +660,7 @@ MonoBehaviour:
   fractal: {fileID: 8709038328575837915}
   screen: {fileID: 7402987460259233765}
   requiredFractal: {fileID: 1821400042837905675}
+  extraUI: {fileID: 0}
 --- !u!114 &3339414677623099076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -841,6 +842,7 @@ MonoBehaviour:
   display: {fileID: 3158765835715392912}
   isRunning: 0
   isFinished: 0
+  destroyFractalCompletelyOnFinish: 0
 --- !u!65 &6139553023625238199
 BoxCollider:
   m_ObjectHideFlags: 0

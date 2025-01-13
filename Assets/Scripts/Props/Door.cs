@@ -109,4 +109,8 @@ public class Door : MonoBehaviour {
             }
         }
     }
+
+    public bool IsOpen() {
+        return isOpen;
+    }
 }

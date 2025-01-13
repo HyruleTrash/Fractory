@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 309128537635421964}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 40.199997, z: 0}
+  m_LocalPosition: {x: 0, y: 80, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -583,8 +583,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerTracker: {fileID: 3871609420007153231}
   displayCamera: {fileID: 721644880004520930}
-  screen: {fileID: 5284142909090721741}
   fractal: {fileID: 0}
+  screen: {fileID: 5284142909090721741}
   userInterface: {fileID: 0}
   holdOffset: {x: 0, y: 0, z: 3}
 --- !u!4 &8692805819206082055 stripped
