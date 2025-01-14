@@ -641,7 +641,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.9966597, y: 1, z: 1}
+  m_Size: {x: 1.66, y: 1.73, z: 1.14}
   m_Center: {x: -0.43332985, y: -9.040546e-13, z: 0.045118388}
 --- !u!114 &3158765835715392912
 MonoBehaviour:
@@ -731,6 +731,10 @@ PrefabInstance:
     - target: {fileID: 7268402949267022346, guid: 190445b2771514540b8d851a0620000e, type: 3}
       propertyPath: m_Name
       value: InteractionPopUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7747052519076855489, guid: 190445b2771514540b8d851a0620000e, type: 3}
+      propertyPath: distanceThreshold
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8266280793227490516, guid: 190445b2771514540b8d851a0620000e, type: 3}
       propertyPath: m_LocalPosition.z
