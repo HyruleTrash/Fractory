@@ -16,4 +16,11 @@ public class PlayerDeath : MonoBehaviour {
             Destroy(gameObject);
         }
     }
+
+    public void GreaterDeath() {
+        Application.Quit();
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+    }
 }

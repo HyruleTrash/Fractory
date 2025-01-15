@@ -151,5 +151,9 @@ MonoBehaviour:
   - PickUpItem
   holdingPosition: {x: 0, y: 1, z: 0}
   levelButton: {fileID: 0}
+  displayButton: {fileID: 0}
   conveyor: {fileID: 0}
+  activated: 1
+  OnMaterial: {fileID: 2100000, guid: 83341df4b07ff5742842904e629a4ab3, type: 2}
+  OffMaterial: {fileID: 2100000, guid: ef2439734ab14024bbf2ef0f5bfc9ddf, type: 2}
   BevelAmount: 0.1

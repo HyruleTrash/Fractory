@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,6 +10,13 @@ public class FractalStation : MonoBehaviour {
     public DisplayButton displayButton;
     public Conveyor conveyor;
     private TriggerTracker triggerTracker;
+    public bool activated = true;
+    
+    [SerializeField]
+    private Material OnMaterial;
+    [SerializeField]
+    private Material OffMaterial;
+    private List<Material> materials;
 
     private void Start() {
         if (levelButton != null) {
@@ -45,6 +53,19 @@ public class FractalStation : MonoBehaviour {
                 }
             }
         }
+        SetMaterials();
+    }
+
+    public void SetMaterials() {
+        if (activated) {
+            materials = new List<Material>(GetComponent<MeshRenderer>().materials);
+            materials[1] = OnMaterial;
+            GetComponent<MeshRenderer>().SetMaterials(materials);
+        } else {
+            materials = new List<Material>(GetComponent<MeshRenderer>().materials);
+            materials[1] = OffMaterial;
+            GetComponent<MeshRenderer>().SetMaterials(materials);
+        }
     }
 
     private void OnDrawGizmosSelected() {
@@ -60,11 +81,13 @@ public class FractalStation : MonoBehaviour {
     }
 
     private void ButtonPressed(string tag, GameObject button) {
-        StationTriggered(tag, triggerTracker);
+        if (activated)
+            StationTriggered(tag, triggerTracker);
     }
 
     private void Activate(GameObject trigger){
-        StationTriggered(null, triggerTracker);
+        if (activated)
+            StationTriggered(null, triggerTracker);
     }
 
     virtual public void StationTriggered(string tag, TriggerTracker triggerTracker) {

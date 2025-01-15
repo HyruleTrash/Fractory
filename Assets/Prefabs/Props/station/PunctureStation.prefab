@@ -151,4 +151,8 @@ MonoBehaviour:
   - PickUpItem
   holdingPosition: {x: 0, y: 1, z: 0}
   levelButton: {fileID: 0}
+  displayButton: {fileID: 0}
   conveyor: {fileID: 0}
+  activated: 1
+  OnMaterial: {fileID: 2100000, guid: 16ffd10568bf1a94b8c009763ea63555, type: 2}
+  OffMaterial: {fileID: 2100000, guid: fd1a29520dfb9e44998f7b90a22d04ab, type: 2}

@@ -85,6 +85,10 @@ public class PlayerPickup : PlayerEpress {
                 {
                     Destroy(collider.GetComponent<InteractPopUpRegistry>());
                 }
+                if (collider.GetComponent<ActivateStationOnPickup>() != null)
+                {
+                    collider.GetComponent<ActivateStationOnPickup>().Activate();
+                }
 
                 // Add the item to the inventory
                 if (inventoryManager.AddItem(item))

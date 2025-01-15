@@ -9,6 +9,7 @@ public class Display : MonoBehaviour {
     private RenderTexture renderTexture;
     public MeshRenderer screen;
     public bool isRendering = false;
+    private GameStateManager gameStateManager;
     public GameObject[] hintObjects;
     private float lastInteractTime = 0;
 
@@ -17,6 +18,7 @@ public class Display : MonoBehaviour {
             fractal.SetActive(false);
         }
         
+        gameStateManager = GameObject.Find("GameStateManager").GetComponent<GameStateManager>();
         player = GameObject.FindWithTag("Player");
         PlayerInteract playerInteract = player.GetComponent<PlayerInteract>();
         if (playerInteract != null)
@@ -28,8 +30,8 @@ public class Display : MonoBehaviour {
     private void Update() {
         PlayerInteract playerInteract = player.GetComponent<PlayerInteract>();
         if (playerInteract != null && 
-        MathUtil.GetDistanceXZ(transform.position, player.transform.position) <= playerInteract.interactDistance &&
-        playerInteract.nearestInteractable == null)
+            MathUtil.GetDistanceXZ(transform.position, player.transform.position) <= playerInteract.interactDistance &&
+            playerInteract.nearestInteractable == null)
         {
             playerInteract.onInteract = OnInteract;
             playerInteract.nearestInteractable = gameObject;
@@ -37,6 +39,12 @@ public class Display : MonoBehaviour {
         if (!isRendering && screen.enabled == true)
         {
             TurnOff();
+        }
+        if (screen.enabled == true && Input.GetKeyDown(KeyCode.Escape))
+        {
+            TurnOff();
+            playerInteract.nearestInteractable = null;
+            playerInteract.onInteract = null;
         }
     }
 
@@ -50,6 +58,7 @@ public class Display : MonoBehaviour {
             TurnOff();
             return;
         }
+        gameStateManager.SetCurrentState(GameState.menu);
         lastInteractTime = Time.time;
         isRendering = true;
 
@@ -99,6 +108,7 @@ public class Display : MonoBehaviour {
             fractal.SetActive(false);
         }
         screen.GetComponent<DisplayScreenGrowShrink>().Shrink();
+        gameStateManager.SetCurrentState(GameState.playing);
         AfterTurnOff();
     }
 

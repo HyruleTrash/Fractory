@@ -12,6 +12,10 @@ public class FractalSpawner : MonoBehaviour {
     public bool autoSpawn = false;
     public float autoSpawnInterval = 2f;
     public bool giveInteractPopUp = false;
+    [Space(10)]
+    public bool turnOnStationOnPickup = false;
+    public FractalStation station;
+    [Space(10)]
     public GameObject interactPopUpPrefab;
     public Vector3 interactPopUpOffset = new Vector3(0, 2.5f, 0);
     private float autoSpawnTimer = 0f;
@@ -79,6 +83,11 @@ public class FractalSpawner : MonoBehaviour {
             interactPopUp.GetComponent<InteractPopUp>().meshRenderer = interactPopUp.GetComponentInChildren<MeshRenderer>();
             interactPopUp.GetComponent<InteractPopUp>().distanceThreshold = 5f;
             registry.interactPopUp = interactPopUp.GetComponent<InteractPopUp>();
+        }
+        if (turnOnStationOnPickup) {
+            ActivateStationOnPickup activateStation = fractal.AddComponent<ActivateStationOnPickup>();
+            activateStation.station = station;
+            activateStation.spawner = this;
         }
         spawnedFractals.Add(fractal);
     }

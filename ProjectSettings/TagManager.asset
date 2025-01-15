@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PickUpItem
   - FractalManager
+  - GameStateManager
   layers:
   - Default
   - TransparentFX
