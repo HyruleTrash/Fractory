@@ -74,7 +74,6 @@ public class PlayerPickup : PlayerEpress {
                     LerpTo lerpTo = collider.AddComponent<LerpTo>();
                     lerpTo.speed = speed;
                     lerpTo.target = holdingPosition;
-                    collider.GetComponent<Rigidbody>().isKinematic = false;
 
                     // set exclusion layers picked up object
                     PlayerInventoryItem liveItem = GetCurrentItem();
@@ -82,6 +81,8 @@ public class PlayerPickup : PlayerEpress {
                     if (rb){
                         liveItem.layerMask = rb.excludeLayers;
                         rb.excludeLayers = exclusionMask | rb.excludeLayers;
+                        rb.isKinematic = false;
+                        rb.linearVelocity = Vector3.zero;
                         int DefaultMask = 0;
                         if (collider.gameObject.layer == DefaultMask)
                         {

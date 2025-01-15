@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="Trashcan_texture.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="8.2142634"
+     inkscape:cx="62.756692"
+     inkscape:cy="43.156639"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g5" />
+  <defs
+     id="defs1">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect1"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g5"
+       inkscape:export-filename="g5.png"
+       inkscape:export-xdpi="508"
+       inkscape:export-ydpi="508">
+      <rect
+         style="fill:#cddfec;fill-opacity:1;stroke:none;stroke-width:0.905999"
+         id="rect1"
+         width="20"
+         height="20"
+         x="-5.5511151e-17"
+         y="-5.5511151e-17" />
+      <path
+         id="rect2"
+         style="fill:#271922;stroke-width:0.355831"
+         d="M 9.918046,4.5 C 9.594326,4.5 9.314745,4.7073009 9.174888,5.0122023 H 6.83872 C 6.374175,5.0122023 6,5.4386475 6,5.9685246 6,6.4984016 6.374175,6.9251997 6.83872,6.9251997 h 6.322561 C 13.625826,6.9251997 14,6.4984016 14,5.9685246 14,5.4386475 13.625826,5.0122023 13.161281,5.0122023 H 10.816454 C 10.676598,4.7073009 10.397016,4.5 10.073295,4.5 Z M 6.809649,7.4306994 c -0.448526,0 -0.80934,1.1808546 -0.80934,2.6477886 v 2.773724 c 0,1.466934 0.360814,2.647788 0.80934,2.647788 h 6.380703 C 13.638878,15.5 14,14.319146 14,12.852212 V 10.078488 C 14,8.611554 13.638878,7.4306994 13.190352,7.4306994 Z m 0.723984,0.6014499 c 0.337894,-0.00132 0.610579,0.3081032 0.61172,0.6935187 l 0.01608,5.402464 c 0.0011,0.385415 -0.269806,0.696739 -0.6077,0.698104 -0.337895,0.0013 -0.610889,-0.307751 -0.61203,-0.693166 L 6.925623,8.7306061 C 6.924523,8.3451916 7.195738,8.0335139 7.533633,8.0321493 Z m 2.418432,0 c 0.337895,-0.00132 0.610888,0.3081032 0.61203,0.6935187 l 0.01608,5.402464 c 0.0012,0.385414 -0.270115,0.696739 -0.60801,0.698104 -0.337893,0.0013 -0.610579,-0.307751 -0.611721,-0.693166 L 9.344364,8.7306061 C 9.343224,8.3451916 9.61417,8.0335139 9.952065,8.0321493 Z m 2.342662,0 c 0.337896,-0.00132 0.61058,0.3081032 0.611722,0.6935187 l 0.01608,5.402464 c 0.0012,0.385415 -0.269807,0.696739 -0.607701,0.698104 -0.337893,0.0013 -0.610889,-0.307751 -0.61203,-0.693166 l -0.01608,-5.4024639 c -0.0012,-0.3854145 0.270115,-0.6970922 0.608009,-0.6984568 z"
+         inkscape:export-filename="Trashcan_texture.png"
+         inkscape:export-xdpi="508"
+         inkscape:export-ydpi="508" />
+    </g>
+  </g>
+</svg>

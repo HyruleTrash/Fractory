@@ -19,6 +19,9 @@ public class FractalSpawner : MonoBehaviour {
     private void Start() {
         if (levelButton != null) {
             levelButton.buttonPressedListeners.Add(ButtonPressed);
+            if (autoSpawn) {
+                levelButton.locked = true;
+            }
         }
         if (conveyor != null) {
             conveyor.onConveyorFinishedListeners.Add(ConveyorFinished);
@@ -30,8 +33,18 @@ public class FractalSpawner : MonoBehaviour {
             autoSpawnTimer += Time.deltaTime;
             if (autoSpawnTimer >= autoSpawnInterval) {
                 autoSpawnTimer = 0f;
+                if (levelButton != null) {
+                    levelButton.SetToPressedState();
+                    Invoke("InvokeUnPress", autoSpawnInterval / 2);
+                }
                 SpawnFractal();
             }
+        }
+    }
+
+    private void InvokeUnPress() {
+        if (levelButton != null) {
+            levelButton.SetToUnPressedState();
         }
     }
 

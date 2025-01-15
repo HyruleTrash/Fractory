@@ -17,6 +17,7 @@ public class LevelButton : MonoBehaviour {
     [Tooltip("The tags a collider requires to let the button become pressed.")]
     public string[] requiredTags;
     public bool isPressed = false;
+    public bool locked = false;
     public List<ButtonPressed> buttonPressedListeners = new List<ButtonPressed>();
     public List<UnButtonPressed> unButtonPressedListeners = new List<UnButtonPressed>();
 
@@ -47,23 +48,34 @@ public class LevelButton : MonoBehaviour {
     }
 
     private void Update() {
+        if (locked) {
+            return;
+        }
         bool isTriggered = triggerTracker.IsTriggered();
         ButtonData data = HasCorrectTags();
         if (isTriggered && data.isPressed && isPressed == false) {
-            materials[1] = OnMaterial;
-            GetComponent<MeshRenderer>().SetMaterials(materials);
-            isPressed = true;
+            SetToPressedState();
             foreach (ButtonPressed listener in buttonPressedListeners) {
                 listener?.Invoke(data.tag, gameObject);
             }
         } else if (isPressed == true && !isTriggered && !data.isPressed) {
-            materials[1] = OffMaterial;
-            GetComponent<MeshRenderer>().SetMaterials(materials);
-            isPressed = false;
+            SetToUnPressedState();
             foreach (UnButtonPressed listener in unButtonPressedListeners) {
                 listener?.Invoke(data.tag, gameObject);
             }
         }
+    }
+
+    public void SetToPressedState() {
+        isPressed = true;
+        materials[1] = OnMaterial;
+        GetComponent<MeshRenderer>().SetMaterials(materials);
+    }
+
+    public void SetToUnPressedState() {
+        isPressed = false;
+        materials[1] = OffMaterial;
+        GetComponent<MeshRenderer>().SetMaterials(materials);
     }
 
     private ButtonData HasCorrectTags(){

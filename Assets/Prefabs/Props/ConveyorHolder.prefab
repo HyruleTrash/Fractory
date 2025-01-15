@@ -192,8 +192,8 @@ MonoBehaviour:
   distanceOffset: {x: 2, y: 100}
   maxSize: 1
   minSize: 0.1
-  isGrowing: 0
-  isShrinking: 0
+  isMoving: 0
+  directionIsGrow: 0
 --- !u!114 &2498731843620642539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,9 +608,6 @@ PrefabInstance:
       addedObject: {fileID: 6797406662632947666}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a15e1c0296d34544f95cd05e11d6557f, type: 3}
-      insertIndex: 1
-      addedObject: {fileID: 427389906178258888}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a15e1c0296d34544f95cd05e11d6557f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3158765835715392912}
   m_SourcePrefab: {fileID: 100100000, guid: a15e1c0296d34544f95cd05e11d6557f, type: 3}
@@ -619,27 +616,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a15e1c0296d34544f95cd05e11d6557f, type: 3}
   m_PrefabInstance: {fileID: 1920440920237189889}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &427389906178258888
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1614451433532397136}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.66, y: 1.73, z: 1.14}
-  m_Center: {x: -0.43332985, y: -9.040546e-13, z: 0.045118388}
 --- !u!114 &3158765835715392912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -658,6 +634,7 @@ MonoBehaviour:
   fractal: {fileID: 8709038328575837915}
   screen: {fileID: 7402987460259233765}
   isRendering: 0
+  hintObjects: []
   requiredFractal: {fileID: 1821400042837905675}
   extraUI: {fileID: 0}
 --- !u!4 &2102195498229288170 stripped

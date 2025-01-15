@@ -9,6 +9,7 @@ public class Display : MonoBehaviour {
     private RenderTexture renderTexture;
     public MeshRenderer screen;
     public bool isRendering = false;
+    public GameObject[] hintObjects;
     private float lastInteractTime = 0;
 
     public void Start() {
@@ -76,7 +77,15 @@ public class Display : MonoBehaviour {
         {
             fractal.SetActive(true);
         }
+        removeHintObjects();
         AfterInteract();
+    }
+
+    public void removeHintObjects(){
+        foreach (GameObject hintObject in hintObjects)
+        {
+            hintObject.SetActive(false);
+        }
     }
 
     virtual protected void AfterInteract(){
