@@ -1,25 +1,34 @@
 using UnityEngine;
 
 public class Display : MonoBehaviour {
-    public TriggerTracker triggerTracker;
-    [SerializeField]
-    protected Camera displayCamera;
+    public GameObject player;
+    public InteractPopUp interactPopUp;
+    public Camera displayCamera;
     public GameObject fractal;
     private Material renderMaterial;
     private RenderTexture renderTexture;
     public MeshRenderer screen;
-    private bool isRendering = false;
+    public bool isRendering = false;
     private float lastInteractTime = 0;
 
     public void Start() {
         if (fractal != null) {
             fractal.SetActive(false);
         }
+        
+        player = GameObject.FindWithTag("Player");
+        PlayerInteract playerInteract = player.GetComponent<PlayerInteract>();
+        if (playerInteract != null)
+        {
+            interactPopUp.distanceThreshold = playerInteract.interactDistance;
+        }
     }
 
     private void Update() {
-        PlayerInteract playerInteract = triggerTracker.GetColliderWithClass<PlayerInteract>();
-        if (playerInteract != null)
+        PlayerInteract playerInteract = player.GetComponent<PlayerInteract>();
+        if (playerInteract != null && 
+        MathUtil.GetDistanceXZ(transform.position, player.transform.position) <= playerInteract.interactDistance &&
+        playerInteract.nearestInteractable == null)
         {
             playerInteract.onInteract = OnInteract;
             playerInteract.nearestInteractable = gameObject;
@@ -45,7 +54,7 @@ public class Display : MonoBehaviour {
 
         if (renderTexture == null)
         {
-            renderTexture = new RenderTexture(256, 256, 24);
+            renderTexture = new RenderTexture(512, 512, 24);
             renderTexture.Create();
             displayCamera.targetTexture = renderTexture;
         }

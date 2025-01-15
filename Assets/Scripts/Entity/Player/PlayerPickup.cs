@@ -1,9 +1,9 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(InventoryManager))]
-public class PlayerPickup : MonoBehaviour {
+public class PlayerPickup : PlayerEpress {
     [Tooltip("CollisionLayer of the player, basically whatever the picked up item should ignore")]
     public LayerMask exclusionMask;
     [Tooltip("CollisionLayer of the pickedup object, what the player should ignore")]
@@ -23,27 +23,30 @@ public class PlayerPickup : MonoBehaviour {
         inventoryManager.SetMaxItems(maxItems);
     }
 
-    private void Update() {
-        Gamepad gamepad = Gamepad.current;
-        void IsInventoryFull(){
-            if (inventoryManager.GetInventorySize() == inventoryManager.GetItemCount())
-            {
-                LetGoItem();
-            }else
-            {
-                PickupItem();
-            }
+    public override void OnPress(){
+        if (inventoryManager.GetInventorySize() == inventoryManager.GetItemCount())
+        {
+            LetGoItem();
+        }else
+        {
+            PickupItem();
         }
-        if (gamepad != null){
-            if (gamepad.aButton.wasPressedThisFrame)
+    }
+
+    public override float GetDistance() {
+        if (inventoryManager.GetInventorySize() == inventoryManager.GetItemCount())
+        {
+            return 0;
+        }else
+        {
+            foreach (Collider collider in boxCollider.colliders)
             {
-                IsInventoryFull();
+                if (collider.CompareTag("PickUpItem") && collider.GetComponent<LerpTo>() == null)
+                {
+                    return MathUtil.GetDistanceXZ(transform.position, collider.transform.position);
+                }
             }
-        }else{
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                IsInventoryFull();
-            }
+            return Mathf.Infinity;
         }
     }
 

@@ -2,18 +2,32 @@ using UnityEngine;
 
 public class DisplayScreenGrowShrink : MonoBehaviour {
     public Camera mainCamera;
-    public float growShrinkSpeed = 0.1f;
+    public float growShrinkSpeed = 5f;
     public Vector2 distanceOffset = new Vector2(2, 20);
     public float maxSize = 1;
     public float minSize = 0.1f;
 
     [HideInInspector]
-    public bool isGrowing = false;
+    public bool isMoving = false;
     [HideInInspector]
-    public bool isShrinking = false;
+    public bool directionIsGrow = false;
+
+    private void Start() {
+        if (mainCamera == null) {
+            mainCamera = Camera.main;
+        }
+
+        Vector3 targetPosition = transform.parent.position + mainCamera.transform.forward * distanceOffset.y;
+        transform.position = targetPosition;
+        transform.localScale = Vector3.one * minSize;
+        isMoving = false;
+        directionIsGrow = true;
+        GetComponent<MeshRenderer>().material = null;
+        GetComponent<MeshRenderer>().enabled = false;
+    }
 
     private void Update() {
-        if (isGrowing)
+        if (isMoving && directionIsGrow)
         {
             Vector3 targetPosition = mainCamera.transform.position + mainCamera.transform.forward * (mainCamera.nearClipPlane + distanceOffset.x);
             transform.position = Vector3.Lerp(transform.position, targetPosition, growShrinkSpeed);
@@ -22,9 +36,11 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
             {
                 transform.position = targetPosition;
                 transform.localScale = Vector3.one * maxSize;
-                isGrowing = false;
+                isMoving = false;
+                directionIsGrow = false;
             }
-        }else if (isShrinking)
+        }
+        if (isMoving && !directionIsGrow)
         {
             Vector3 targetPosition = transform.parent.position + mainCamera.transform.forward * distanceOffset.y;
             transform.position = Vector3.Lerp(transform.position, targetPosition, growShrinkSpeed);
@@ -33,7 +49,8 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
             {
                 transform.position = targetPosition;
                 transform.localScale = Vector3.one * minSize;
-                isShrinking = false;
+                isMoving = false;
+                directionIsGrow = true;
                 GetComponent<MeshRenderer>().material = null;
                 GetComponent<MeshRenderer>().enabled = false;
             }
@@ -41,10 +58,12 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
     }
 
     public void Grow(){
-        isGrowing = true;
+        isMoving = true;
+        directionIsGrow = true;
     }
 
     public void Shrink(){
-        isShrinking = true;
+        isMoving = true;
+        directionIsGrow = false;
     }
 }

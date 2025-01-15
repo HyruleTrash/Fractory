@@ -23,7 +23,7 @@ public class Door : MonoBehaviour {
         if (levelButtons.Length > 0) {
             foreach (LevelButton levelButtons in levelButtons) {
                 levelButtons.buttonPressedListeners.Add(ButtonPressed);
-                if (!stayOpen && !flipState) {
+                if (!flipState) {
                     levelButtons.unButtonPressedListeners.Add(UnButtonPressed);
                 }
             }
@@ -89,7 +89,7 @@ public class Door : MonoBehaviour {
         if (multiInput && trigger != null && currentInputs.Contains(trigger)) {
             currentInputs.Remove(trigger);
         }else{
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= animator.GetCurrentAnimatorStateInfo(0).length) {
+            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= animator.GetCurrentAnimatorStateInfo(0).length && !stayOpen) {
                 timeStampClose = Time.time;
                 needsToClose = true;
             }

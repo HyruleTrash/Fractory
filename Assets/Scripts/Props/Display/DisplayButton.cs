@@ -17,6 +17,7 @@ public class DisplayButton : Display {
     }
 
     protected override void AfterInteract(){
+        userInterface.SetPosition();
         userInterface.gameObject.SetActive(true);
     }
 

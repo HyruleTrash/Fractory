@@ -128,4 +128,8 @@ public static class MathUtil
     public static Vector3 GetXZY(Vector4 vector){
         return new Vector3(vector.x, vector.z, vector.y);
     }
+
+    public static float GetDistanceXZ(Vector3 from, Vector3 to){
+        return Vector2.Distance(new Vector2(from.x, from.z), new Vector2(to.x, to.z));
+    }
 }

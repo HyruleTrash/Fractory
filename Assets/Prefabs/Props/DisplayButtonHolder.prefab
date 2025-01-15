@@ -461,6 +461,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4648937740466479800, guid: 190445b2771514540b8d851a0620000e, type: 3}
   m_PrefabInstance: {fileID: 486845693612443491}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7873014168548030882 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7747052519076855489, guid: 190445b2771514540b8d851a0620000e, type: 3}
+  m_PrefabInstance: {fileID: 486845693612443491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 561b13eb6551b114b9f2ca5b79c8baaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &9163054664877832684
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -528,9 +539,6 @@ PrefabInstance:
       addedObject: {fileID: 5328558601696478982}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a15e1c0296d34544f95cd05e11d6557f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3871609420007153231}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a15e1c0296d34544f95cd05e11d6557f, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8214743140883925814}
   m_SourcePrefab: {fileID: 100100000, guid: a15e1c0296d34544f95cd05e11d6557f, type: 3}
 --- !u!1 &8352167927944463549 stripped
@@ -559,20 +567,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.71, y: 1.74, z: 1}
   m_Center: {x: -0.43332985, y: -9.040546e-13, z: 0.045118388}
---- !u!114 &3871609420007153231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8352167927944463549}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5ec8fbcefe180a45922a9adab4a0c4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trigger: {fileID: 5328558601696478982}
-  colliders: []
 --- !u!114 &8214743140883925814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,10 +579,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7d6c1df2143dd141b988c03c8886b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerTracker: {fileID: 3871609420007153231}
+  player: {fileID: 0}
+  interactPopUp: {fileID: 7873014168548030882}
   displayCamera: {fileID: 721644880004520930}
   fractal: {fileID: 0}
   screen: {fileID: 5284142909090721741}
+  isRendering: 0
   userInterface: {fileID: 0}
   holdOffset: {x: 0, y: 0, z: 3}
 --- !u!4 &8692805819206082055 stripped

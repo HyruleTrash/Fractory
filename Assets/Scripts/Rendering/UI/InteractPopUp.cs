@@ -5,12 +5,17 @@ public class InteractPopUp : MonoBehaviour {
     public MeshRenderer meshRenderer;
     public float distanceThreshold = 2;
 
+    private void Start() {
+        meshRenderer.enabled = false;
+        player = GameObject.FindWithTag("Player");
+    }
+
     private void Update() {
         if (player == null)
         {
             return;
         }
-        if (Vector3.Distance(transform.position, player.transform.position) < distanceThreshold)
+        if (MathUtil.GetDistanceXZ(transform.position, player.transform.position) < distanceThreshold)
         {
             meshRenderer.enabled = true;
         }else{
