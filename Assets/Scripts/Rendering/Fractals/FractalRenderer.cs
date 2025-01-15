@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [ExecuteAlways]
+[RequireComponent(typeof(FractalCuller))]
 public class FractalRenderer : MonoBehaviour {
     public FractalType type;
     public Color color = Color.white;
@@ -41,6 +42,8 @@ public class FractalRenderer : MonoBehaviour {
 
     private void Start() {
         AddToManager();
+        if (GetComponent<FractalCuller>() == null)
+            gameObject.AddComponent<FractalCuller>();
     }
 
     private void OnEnable() {

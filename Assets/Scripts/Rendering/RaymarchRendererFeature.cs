@@ -46,6 +46,13 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
         }
     }
 
+    private void OnDisable() {
+        if (_raymarchPass.fractalBuffer != null){
+            _raymarchPass.fractalBuffer.Release();
+            _raymarchPass.fractalBuffer = null;
+        }
+    }
+
     public class RaymarchPass : ScriptableRenderPass{
         public float maxDistance;
         public Transform light;
@@ -92,7 +99,7 @@ public class RaymarchRendererFeature : ScriptableRendererFeature
             if (!_source.IsValid() || !_destination.IsValid())
                 return;
 
-            fractals = _fractalManager.GetFractals();
+            fractals = _fractalManager.GetFractals(cameraData.camera);
             if (fractals.Length == 0)
                 return;
 
