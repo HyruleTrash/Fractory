@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerInteract : PlayerEpress {
@@ -50,5 +51,15 @@ public class PlayerInteract : PlayerEpress {
         }else{
             return Mathf.Infinity;
         }
+    }
+
+    public override float GetLookAt() {
+        if (nearestInteractable == null)
+        {
+            return -1;
+        }
+
+        Vector3 localPos = (nearestInteractable.transform.position - transform.position).normalized;
+        return Vector3.Dot(transform.forward, localPos);
     }
 }

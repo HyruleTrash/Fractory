@@ -10,6 +10,7 @@ public class PlayerEpressHandler : MonoBehaviour {
     class PlayerEpressWeight {
         public PlayerEpress playerEpress;
         public float distance;
+        public float lookAt;
     }
 
     private void Start() {
@@ -43,11 +44,13 @@ public class PlayerEpressHandler : MonoBehaviour {
         {
             playerEpressWeights.Add(new PlayerEpressWeight() {
                 playerEpress = playerEpress,
-                distance = playerEpress.GetDistance()
+                distance = playerEpress.GetDistance(),
+                lookAt = playerEpress.GetLookAt()
             });
         }
 
         playerEpressWeights.Sort((a, b) => a.distance.CompareTo(b.distance));
+        playerEpressWeights.Sort((b, a) => a.lookAt.CompareTo(b.lookAt));
         if (playerEpressWeights[0].distance != Mathf.Infinity)
         {
             playerEpressWeights[0].playerEpress.OnPress();

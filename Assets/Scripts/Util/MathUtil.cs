@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -125,11 +126,42 @@ public static class MathUtil
         return new Vector4(color.r, color.g, color.b, color.a);
     }
 
+    /// <summary>
+    /// Changes the order of the used Vector3 values to XZY
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <returns></returns>
     public static Vector3 GetXZY(Vector4 vector){
         return new Vector3(vector.x, vector.z, vector.y);
     }
 
+    /// <summary>
+    /// Returns the distance between two points in 2D space
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <returns></returns>
     public static float GetDistanceXZ(Vector3 from, Vector3 to){
         return Vector2.Distance(new Vector2(from.x, from.z), new Vector2(to.x, to.z));
+    }
+
+    /// <summary>
+    /// Returns the closest value to a scalar
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <param name="c"></param>
+    /// <returns></returns>
+    public static object CloserToScalar(double a, double b, double c)
+    {
+        double distA = Math.Abs(a / c);
+        double distB = Math.Abs(b / c);
+
+        if (distA < distB)
+            return a;
+        else if (distB < distA)
+            return b;
+        else
+            return a;
     }
 }

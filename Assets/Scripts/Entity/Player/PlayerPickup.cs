@@ -50,6 +50,24 @@ public class PlayerPickup : PlayerEpress {
         }
     }
 
+    public override float GetLookAt() {
+        if (inventoryManager.GetInventorySize() == inventoryManager.GetItemCount())
+        {
+            return 1;
+        }else
+        {
+            foreach (Collider collider in boxCollider.colliders)
+            {
+                if (collider.CompareTag("PickUpItem") && collider.GetComponent<LerpTo>() == null)
+                {
+                    Vector3 localPos = (collider.transform.position - transform.position).normalized;
+                    return Vector3.Dot(transform.forward, localPos);
+                }
+            }
+            return -1;
+        }
+    }
+
     /// <summary>
     /// Pick up an item
     /// </summary>
