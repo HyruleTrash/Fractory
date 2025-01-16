@@ -19,6 +19,7 @@ public class FractalSpawner : MonoBehaviour {
     public GameObject interactPopUpPrefab;
     public Vector3 interactPopUpOffset = new Vector3(0, 2.5f, 0);
     private float autoSpawnTimer = 0f;
+    public ParticleSystem particleEffect;
 
     private void Start() {
         if (levelButton != null) {
@@ -73,7 +74,7 @@ public class FractalSpawner : MonoBehaviour {
         if (spawnedFractals.Count >= maxSpawnAmount) {
             return;
         }
-
+        particleEffect.Play();
         GameObject fractal = Instantiate(fractalPrefab, spawnPoint.position, Quaternion.identity);
         fractal.AddComponent<SpawnerTracker>().spawner = this;
         if (giveInteractPopUp) {

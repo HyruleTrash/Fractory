@@ -10,7 +10,8 @@ public class FractalStation : MonoBehaviour {
     public DisplayButton displayButton;
     public Conveyor conveyor;
     private TriggerTracker triggerTracker;
-    public bool activated = true;
+    public bool locked = false;
+    public ParticleSystem particleEffect;
     
     [SerializeField]
     private Material OnMaterial;
@@ -46,7 +47,7 @@ public class FractalStation : MonoBehaviour {
             }
         }else{
             if (displayButton != null && displayButton.fractal != null) {
-                displayButton.RemoveFractal();
+                displayButton.RemoveFractal(true);
                 RotateAroundAxis rotateComponent = renderer.GetComponent<RotateAroundAxis>();
                 if (rotateComponent != null) {
                     Destroy(rotateComponent);
@@ -57,7 +58,7 @@ public class FractalStation : MonoBehaviour {
     }
 
     public void SetMaterials() {
-        if (activated) {
+        if (!locked) {
             materials = new List<Material>(GetComponent<MeshRenderer>().materials);
             materials[1] = OnMaterial;
             GetComponent<MeshRenderer>().SetMaterials(materials);
@@ -81,13 +82,23 @@ public class FractalStation : MonoBehaviour {
     }
 
     private void ButtonPressed(string tag, GameObject button) {
-        if (activated)
+        if (!locked)
             StationTriggered(tag, triggerTracker);
     }
 
     private void Activate(GameObject trigger){
-        if (activated)
+        if (!locked)
             StationTriggered(null, triggerTracker);
+    }
+
+    public void Lock() {
+        locked = true;
+        SetMaterials();
+    }
+    public void UnLock() {
+        locked = false;
+        particleEffect.Play();
+        SetMaterials();
     }
 
     virtual public void StationTriggered(string tag, TriggerTracker triggerTracker) {
@@ -97,7 +108,7 @@ public class FractalStation : MonoBehaviour {
     virtual public void StationFinished() {
         FractalRenderer renderer = triggerTracker.GetColliderWithClass<FractalRenderer>();
         if (displayButton != null && displayButton.fractal != null && renderer != null) {
-            displayButton.RemoveFractal();
+            displayButton.RemoveFractal(false);
             displayButton.SetFractal(renderer);
         }
     }

@@ -1,5 +1,72 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &19909395288905399
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7293985867838074668}
+    m_Modifications:
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146033140599842118, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_Name
+      value: Particles
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+--- !u!4 &1699885914786345953 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+  m_PrefabInstance: {fileID: 19909395288905399}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &8190459819091348782 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8209183279420513177, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+  m_PrefabInstance: {fileID: 19909395288905399}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7112249225895233735
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58,7 +125,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1699885914786345953}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       insertIndex: -1
@@ -73,6 +143,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1331848499475160322}
   m_SourcePrefab: {fileID: 100100000, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
+--- !u!4 &7293985867838074668 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
+  m_PrefabInstance: {fileID: 7112249225895233735}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7958600705953330582 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
@@ -153,7 +228,8 @@ MonoBehaviour:
   levelButton: {fileID: 0}
   displayButton: {fileID: 0}
   conveyor: {fileID: 0}
-  activated: 1
+  locked: 0
+  particleEffect: {fileID: 8190459819091348782}
   OnMaterial: {fileID: 2100000, guid: 83341df4b07ff5742842904e629a4ab3, type: 2}
   OffMaterial: {fileID: 2100000, guid: ef2439734ab14024bbf2ef0f5bfc9ddf, type: 2}
   BevelAmount: 0.1

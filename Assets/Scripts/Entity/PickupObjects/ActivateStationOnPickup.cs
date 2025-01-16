@@ -6,7 +6,7 @@ public class ActivateStationOnPickup : MonoBehaviour {
 
     public void Activate() {
         if (station != null) {
-            station.activated = true;
+            station.UnLock();
             spawner.turnOnStationOnPickup = false;
             Destroy(this);
         }

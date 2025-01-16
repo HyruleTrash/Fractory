@@ -27,8 +27,12 @@ public class DisplayButton : Display {
         displayCamera.transform.LookAt(fractal.transform);
     }
 
-    public void RemoveFractal(){
+    public void RemoveFractal(bool turnOff = false){
         Destroy(fractal);
+        if (isRendering && turnOff)
+        {
+            TurnOff();
+        }
     }
 
     public void Activate(){

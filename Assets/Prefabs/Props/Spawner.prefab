@@ -31,6 +31,77 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4404073654663961789}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3212611170053159270
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4404073654663961789}
+    m_Modifications:
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7146033140599842118, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: m_Name
+      value: Particles
+      objectReference: {fileID: 0}
+    - target: {fileID: 8841446245988409812, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d656f0b1160636d4faf8d47ca84c33f6, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+--- !u!4 &4270805048891317296 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1716309368538195286, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+  m_PrefabInstance: {fileID: 3212611170053159270}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &6735586672523076351 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 8209183279420513177, guid: 6fff4eafb8940d449973faf2e1bee374, type: 3}
+  m_PrefabInstance: {fileID: 3212611170053159270}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4221228388835900246
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -93,6 +164,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5934749613408654869}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4270805048891317296}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
       insertIndex: -1
@@ -148,8 +222,11 @@ MonoBehaviour:
   autoSpawn: 0
   autoSpawnInterval: 2
   giveInteractPopUp: 0
+  turnOnStationOnPickup: 0
+  station: {fileID: 0}
   interactPopUpPrefab: {fileID: 0}
   interactPopUpOffset: {x: 0, y: 2.5, z: 0}
+  particleEffect: {fileID: 6735586672523076351}
 --- !u!4 &4404073654663961789 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ddb1a8ade3b0a544283672c7bbfa0fe0, type: 3}
