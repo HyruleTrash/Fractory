@@ -11,8 +11,8 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
     public bool isMoving = false;
     [HideInInspector]
     public bool directionIsGrow = false;
-
     private Transform oldParent;
+    private Vector3 targetPosition;
 
     private void Start() {
         if (mainCamera == null) {
@@ -32,22 +32,24 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
     }
 
     private void Update() {
-        if (isMoving && directionIsGrow)
+        if (directionIsGrow)
         {
-            Vector3 targetPosition = mainCamera.transform.position + mainCamera.transform.forward * (mainCamera.nearClipPlane + distanceOffset.x);
+            targetPosition = mainCamera.transform.position + mainCamera.transform.forward * (mainCamera.nearClipPlane + distanceOffset.x);
             transform.position = Vector3.Lerp(transform.position, targetPosition, growShrinkSpeed);
-            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * maxSize, growShrinkSpeed);
-            if (Vector3.Distance(transform.position, targetPosition) < 0.1f && transform.localScale.magnitude > maxSize - 0.1f)
-            {
-                transform.position = targetPosition;
-                transform.localScale = Vector3.one * maxSize;
-                isMoving = false;
-                directionIsGrow = false;
+            if (isMoving){
+                transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * maxSize, growShrinkSpeed);
+                if (Vector3.Distance(transform.position, targetPosition) < 0.1f && transform.localScale.magnitude > maxSize - 0.1f)
+                {
+                    transform.position = targetPosition;
+                    transform.localScale = Vector3.one * maxSize;
+                    isMoving = false;
+                    directionIsGrow = false;
+                }
             }
         }
         if (isMoving && !directionIsGrow)
         {
-            Vector3 targetPosition = oldParent.position + mainCamera.transform.forward * distanceOffset.y;
+            targetPosition = oldParent.position + mainCamera.transform.forward * distanceOffset.y;
             transform.position = Vector3.Lerp(transform.position, targetPosition, growShrinkSpeed);
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * minSize, growShrinkSpeed);
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f && transform.localScale.magnitude < minSize + 0.1f)

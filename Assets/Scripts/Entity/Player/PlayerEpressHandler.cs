@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -45,16 +46,13 @@ public class PlayerEpressHandler : MonoBehaviour {
             playerEpressWeights.Add(new PlayerEpressWeight() {
                 playerEpress = playerEpress,
                 distance = playerEpress.GetDistance(),
-                lookAt = playerEpress.GetLookAt()
+                lookAt = -playerEpress.GetLookAt()
             });
+            
+            PlayerEpressWeight playerEpressWeight = playerEpressWeights[playerEpressWeights.Count - 1];
         }
 
-        Debug.Log("playerEpressWeights: " + JsonUtility.ToJson(playerEpressWeights));
-        playerEpressWeights.Sort((a, b) => a.distance.CompareTo(b.distance));
-        playerEpressWeights.Sort((b, a) => a.lookAt.CompareTo(b.lookAt));
-        if (playerEpressWeights[0].distance != Mathf.Infinity)
-        {
-            playerEpressWeights[0].playerEpress.OnPress();
-        }
+        List<PlayerEpressWeight> orderedPlayerEpressWeights = playerEpressWeights.OrderBy(a => a.lookAt).ThenBy(a => a.distance).ToList();
+        orderedPlayerEpressWeights[0].playerEpress.OnPress();
     }
 }

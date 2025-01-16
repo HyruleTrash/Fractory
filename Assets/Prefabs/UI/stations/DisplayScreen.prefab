@@ -142,7 +142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
   growShrinkSpeed: 0.1
-  distanceOffset: {x: 2, y: 100}
+  distanceOffset: {x: 5, y: 100}
   maxSize: 1
   minSize: 0.1
   isMoving: 0

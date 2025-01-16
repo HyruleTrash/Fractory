@@ -11,6 +11,8 @@ public class Display : MonoBehaviour {
     private Material renderMaterial;
     private RenderTexture renderTexture;
     public MeshRenderer screen;
+    [SerializeField]
+    public Shader screenShader;
     public bool isRendering = false;
     private GameStateManager gameStateManager;
     public GameObject[] hintObjects;
@@ -108,7 +110,7 @@ public class Display : MonoBehaviour {
         }
         if (renderMaterial == null)
         {
-            renderMaterial = new Material(Shader.Find("Unlit/Texture"));
+            renderMaterial = new Material(screenShader);
             renderMaterial.mainTexture = renderTexture;
         }else{
             renderMaterial.mainTexture = renderTexture;

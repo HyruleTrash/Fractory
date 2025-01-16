@@ -506,6 +506,7 @@ MonoBehaviour:
   displayCamera: {fileID: 721644880004520930}
   fractal: {fileID: 0}
   screen: {fileID: 5284142909090721741}
+  screenShader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   isRendering: 0
   hintObjects: []
   userInterfaces: []

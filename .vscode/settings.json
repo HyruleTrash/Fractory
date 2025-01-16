@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "FracturedRealm.sln"
+    "dotnet.defaultSolution": "Fractory.sln"
 }
