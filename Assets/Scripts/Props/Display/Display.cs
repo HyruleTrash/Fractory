@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Display : MonoBehaviour {
     public GameObject player;
@@ -11,9 +14,14 @@ public class Display : MonoBehaviour {
     public bool isRendering = false;
     private GameStateManager gameStateManager;
     public GameObject[] hintObjects;
+    
+    [SerializeField]
+    public List<DisplayUI> userInterfaces = new List<DisplayUI>();
+    [SerializeField]
+    private GameObject userInterfacePrefab;
     private float lastInteractTime = 0;
 
-    public void Start() {
+    private void Start() {
         if (fractal != null) {
             fractal.SetActive(false);
         }
@@ -25,9 +33,35 @@ public class Display : MonoBehaviour {
         {
             interactPopUp.distanceThreshold = playerInteract.interactDistance;
         }
+
+        
+        GameObject canvas = GameObject.Find("Canvas");
+        GameObject userInterface = Instantiate(userInterfacePrefab, canvas.transform);
+
+        for (int i = 0; i < userInterface.transform.childCount; i++)
+        {
+            GameObject element = userInterface.transform.GetChild(i).gameObject;
+            DisplayUI displayUI = element.GetComponent<DisplayUI>();
+            if (displayUI != null)
+            {
+                userInterfaces.Add(displayUI);
+                displayUI.gameObject.SetActive(false);
+                displayUI.displayScreen = screen.gameObject;
+            }
+        }
+
+        AfterStart();
+    }
+
+    virtual protected void AfterStart(){
+        // Override this method to add custom behavior after the interact event.
     }
 
     private void Update() {
+        if (player == null)
+        {
+            player = GameObject.FindWithTag("Player");
+        }
         PlayerInteract playerInteract = player.GetComponent<PlayerInteract>();
         if (playerInteract != null && 
             MathUtil.GetDistanceXZ(transform.position, player.transform.position) <= playerInteract.interactDistance &&
@@ -57,6 +91,10 @@ public class Display : MonoBehaviour {
             }
             TurnOff();
             return;
+        }
+        if (gameStateManager == null)
+        {
+            gameStateManager = GameObject.Find("GameStateManager").GetComponent<GameStateManager>();
         }
         gameStateManager.SetCurrentState(GameState.menu);
         lastInteractTime = Time.time;
@@ -90,6 +128,20 @@ public class Display : MonoBehaviour {
         AfterInteract();
     }
 
+    protected void SetUIText(string text){
+        foreach (DisplayUI userInterface in userInterfaces)
+        {
+            TextMeshProUGUI uiText = userInterface.GetComponent<TextMeshProUGUI>();
+            if (uiText == null)
+                uiText = HierarchyUtil.GetFirstChildWithComponent(userInterface.transform, typeof(TextMeshProUGUI)).GetComponent<TextMeshProUGUI>();
+            if (uiText != null)
+            {
+                uiText.text = text;
+                return;
+            }
+        }
+    }
+
     public void removeHintObjects(){
         foreach (GameObject hintObject in hintObjects)
         {
@@ -98,9 +150,21 @@ public class Display : MonoBehaviour {
     }
 
     virtual protected void AfterInteract(){
-        // Override this method to add custom behavior after the interact event.
+        if (fractal != null)
+        {
+            SetUIText("Iterations: " + fractal.GetComponent<FractalRenderer>().complexity + "\n" + "Rounding: " + fractal.GetComponent<FractalRenderer>().bevel);
+        }
+        foreach (DisplayUI userInterface in userInterfaces)
+        {
+            userInterface.SetPosition();
+            userInterface.gameObject.SetActive(true);
+        }
     }
     
+    private void ReturnGameState(){
+        gameStateManager.SetCurrentState(GameState.playing);
+    }
+
     public void TurnOff(){
         isRendering = false;
         if (fractal != null)
@@ -108,11 +172,12 @@ public class Display : MonoBehaviour {
             fractal.SetActive(false);
         }
         screen.GetComponent<DisplayScreenGrowShrink>().Shrink();
-        gameStateManager.SetCurrentState(GameState.playing);
+        Invoke("ReturnGameState", 1f);
         AfterTurnOff();
     }
 
     virtual protected void AfterTurnOff(){
-        // Override this method to add custom behavior after the interact event.
+        foreach (DisplayUI userInterface in userInterfaces)
+            userInterface.gameObject.SetActive(false);
     }
 }

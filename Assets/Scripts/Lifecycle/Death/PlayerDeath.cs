@@ -18,9 +18,8 @@ public class PlayerDeath : MonoBehaviour {
     }
 
     public void GreaterDeath() {
-        Application.Quit();
-        #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+        GameStateManager gameStateManager = GameObject.Find("GameStateManager").GetComponent<GameStateManager>();
+        gameStateManager.ExitGame();
+        Death();
     }
 }

@@ -12,6 +12,8 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
     [HideInInspector]
     public bool directionIsGrow = false;
 
+    private Transform oldParent;
+
     private void Start() {
         if (mainCamera == null) {
             mainCamera = Camera.main;
@@ -24,6 +26,9 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
         directionIsGrow = true;
         GetComponent<MeshRenderer>().material = null;
         GetComponent<MeshRenderer>().enabled = false;
+
+        oldParent = transform.parent;
+        transform.parent = null;
     }
 
     private void Update() {
@@ -42,7 +47,7 @@ public class DisplayScreenGrowShrink : MonoBehaviour {
         }
         if (isMoving && !directionIsGrow)
         {
-            Vector3 targetPosition = transform.parent.position + mainCamera.transform.forward * distanceOffset.y;
+            Vector3 targetPosition = oldParent.position + mainCamera.transform.forward * distanceOffset.y;
             transform.position = Vector3.Lerp(transform.position, targetPosition, growShrinkSpeed);
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.one * minSize, growShrinkSpeed);
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f && transform.localScale.magnitude < minSize + 0.1f)

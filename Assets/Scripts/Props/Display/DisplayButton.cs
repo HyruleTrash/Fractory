@@ -1,12 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DisplayButton : Display {
     [SerializeField]
     public delegate void ButtonPressed(GameObject button);
     public List<ButtonPressed> buttonPressedListeners = new List<ButtonPressed>();
-    public UIButtonOnDisplay userInterface;
     public Vector3 holdOffset = new Vector3(0, 0, 3);
+
+    protected override void AfterStart(){
+        foreach (DisplayUI userInterface in userInterfaces)
+        {
+            Button button = userInterface.GetComponent<Button>();
+            if (button != null)
+            {
+                button.onClick.AddListener(Activate);
+            }
+        }
+    }
 
     public void SetFractal(FractalRenderer fractalRenderer){
         fractal = new GameObject();
@@ -14,15 +25,6 @@ public class DisplayButton : Display {
         fractalRenderer.CopyTo(fractal);
         fractal.AddComponent<RotateBasedOnMouse>();
         displayCamera.transform.LookAt(fractal.transform);
-    }
-
-    protected override void AfterInteract(){
-        userInterface.SetPosition();
-        userInterface.gameObject.SetActive(true);
-    }
-
-    protected override void AfterTurnOff(){
-        userInterface.gameObject.SetActive(false);
     }
 
     public void RemoveFractal(){
@@ -33,6 +35,10 @@ public class DisplayButton : Display {
         foreach (ButtonPressed listener in buttonPressedListeners)
         {
             listener?.Invoke(gameObject);
+            if (fractal != null)
+            {
+                SetUIText("Iterations: " + fractal.GetComponent<FractalRenderer>().complexity + "\n" + "Rounding: " + fractal.GetComponent<FractalRenderer>().bevel);
+            }
         }
     }
 }

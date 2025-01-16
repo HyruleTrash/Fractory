@@ -147,8 +147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9818255e44ad93c48b725c55295eaaae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  display: {fileID: 0}
-  offset: {x: 5, y: -7, z: 0}
+  displayScreen: {fileID: 0}
+  offset: {x: 6.5, y: 5, z: 0}
   MainCamera: {fileID: 0}
 --- !u!114 &857661553193386015
 MonoBehaviour:
@@ -162,9 +162,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0f96778205e990449d41f33a8613805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  setting: 0
   percentage: {x: 8.35, y: 0}
   equalToWidth: 1
   equalToHeight: 0
+  OnlyDoWidth: 0
+  OnlyDoHeight: 0
 --- !u!1 &6775334171917863863
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,6 +317,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0f96778205e990449d41f33a8613805, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  setting: 0
   percentage: {x: 5.61, y: 0}
   equalToWidth: 1
   equalToHeight: 0
+  OnlyDoWidth: 0
+  OnlyDoHeight: 0
