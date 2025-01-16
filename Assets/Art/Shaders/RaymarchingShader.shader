@@ -190,7 +190,8 @@ Shader "FracturedRealm/RaymarchingShader"
             inputAlt.texcoord = input.texcoord;
             inputAlt.positionCS = input.positionCS;
             
-            float3 oldColor = FragBilinear(inputAlt).rgb;
+            float4 oldColorFull = FragBilinear(inputAlt).rgba;
+            float3 oldColor = oldColorFull.rgb;
             
             float3 rayDir;
             float3 rayOrigin;
@@ -209,7 +210,14 @@ Shader "FracturedRealm/RaymarchingShader"
             }
 
             float4 color = RayMarching(rayOrigin, rayDir, depth);
-            return float4(oldColor * (1 - color.a) + color.rgb * color.a, 1);
+            float3 result = oldColor * (1 - color.a) + color.rgb * color.a;
+            if (result.r == oldColor.r && result.g == oldColor.g && result.b == oldColor.b)
+            {
+                discard;
+                return oldColorFull;
+            }else{
+                return float4(result, 1);
+            }
         }
     
     ENDHLSL
