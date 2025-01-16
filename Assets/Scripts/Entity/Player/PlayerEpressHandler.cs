@@ -49,6 +49,7 @@ public class PlayerEpressHandler : MonoBehaviour {
             });
         }
 
+        Debug.Log("playerEpressWeights: " + JsonUtility.ToJson(playerEpressWeights));
         playerEpressWeights.Sort((a, b) => a.distance.CompareTo(b.distance));
         playerEpressWeights.Sort((b, a) => a.lookAt.CompareTo(b.lookAt));
         if (playerEpressWeights[0].distance != Mathf.Infinity)
